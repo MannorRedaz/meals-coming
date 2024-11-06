@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <title>菩提阁</title>
+    <link rel="icon" href="../images/favico.ico">
+    <!--不同屏幕尺寸根字体设置-->
+    <script src="../js/base.js"></script>
+    <!--element-ui的样式-->
+    <link rel="stylesheet" href="../../backend/plugins/element-ui/index.css"/>
+    <!--引入vant样式-->
+    <link rel="stylesheet" href="../styles/vant.min.css"/>
+    <!-- 引入样式  -->
+    <link rel="stylesheet" href="../styles/index.css"/>
+    <!--本页面内容的样式-->
+    <link rel="stylesheet" href="../styles/userInfo.css"/>
+
+</head>
+<body>
+<div id="userInfo" class="app">
+    <div class="divHead">
+        <div class="divTitle">
+            <i class="el-icon-arrow-left" @click="goBack"></i>个人信息修改
+        </div>
+    </div>
+    <div class="divContent">
+        <el-form ref="form" :model="userInfo" label-width="80px">
+            <el-form-item label="用户名">
+                <el-input v-model="userInfo.name" maxlength="20"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号">
+                <el-input v-model="userInfo.phone" maxlength="15"></el-input>
+            </el-form-item>
+            <el-form-item label="性别">
+                <el-select v-model="userInfo.sex" placeholder="请选择性别">
+                    <el-option label="男" value="1"></el-option>
+                    <el-option label="女" value="0"></el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item
+                    label="上传头像:"
+                    prop="region"
+                    class="uploadImg"
+            >
+                <el-upload
+                        class="avatar-uploader"
+                        action="/common/upload"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :on-change="onChange"
+                        ref="upload"
+                >
+                    <img
+                            v-if="imageUrl"
+                            :src="imageUrl"
+                            class="avatar"
+                            style="width: 150px ;height: 150px"
+                    ></img>
+                    <i
+                            v-else
+                            class="el-icon-plus avatar-uploader-icon"
+                    ></i>
+                </el-upload>
+            </el-form-item>
+
+
+            <el-form-item>
+                <el-button type="primary" @click="submitUserInfo">提交</el-button>
+                <el-button @click="goBack">取消</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+
+</div>
+<!-- 开发环境版本,包含了有帮助的命令行警告 -->
+<script src="../../backend/plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../backend/plugins/element-ui/index.js"></script>
+<!-- 引入vant样式 -->
+<script src="../js/vant.min.js"></script>
+<script src="../api/userInfo.js"></script>
+<!-- 引入axios -->
+<script src="../../backend/plugins/axios/axios.min.js"></script>
+<script src="../js/request.js"></script>
+<script>
+    new Vue({
+        el: "#userInfo",
+        data() {
+            return {
+                imageUrl: "",
+                userInfo: {
+                    name: '',
+                    sex: '',
+                    avatar: '',
+                    phone: '',
+                }
+            }
+        },
+        computed: {},
+        created() {
+            this.initData()
+        },
+        mounted() {
+        },
+        methods: {
+            goBack() {
+                history.go(-1)
+            },
+            async initData() {
+                // console.log(this.userInfo)
+                let res = await userInfoApi()
+                if (String(res.code) === '1') {
+                    this.userInfo = res.data;
+                    localStorage.setItem('userInfo', JSON.stringify(res.data))
+                    this.imageUrl = `/common/download?name=${res.data.avatar}`
+                    // console.log("before:" + this.imageUrl)
+                } else {
+                    this.$message.error(res.msg)
+                    // this.$notify({type: 'warning', message: res.msg});
+                }
+            },
+            async submitUserInfo() {
+                // console.log('submit!');
+                let res = await submitApi(JSON.stringify(this.userInfo))
+                if (String(res.code) === '1') {
+                    this.$message.success("提交成功")
+                    localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+                    sessionStorage.setItem("userPhone", this.userInfo.phone)
+                    sessionStorage.setItem("username", this.userInfo.name)
+                    sessionStorage.setItem("sex", this.userInfo.sex)
+                    sessionStorage.setItem("avatar", this.userInfo.avatar)
+                    history.go(-1)
+                } else {
+                    // this.$message.error(res.msg)
+                    this.$message.error("提交失败")
+                    // this.$notify({type: 'warning', message: res.msg});
+                }
+            },
+            handleAvatarSuccess(response, file, fileList) {
+                // 拼接down接口预览
+                if (response.code === 0 && response.msg === '未登录') {
+                    window.top.location.href = '/backend/page/login/login.html'
+                } else {
+                    this.imageUrl = `/common/download?name=${response.data}`
+                    this.userInfo.avatar = response.data
+                }
+            },
+
+            onChange(file) {
+                if (file) {
+                    const suffix = file.name.split('.')[1]
+                    const size = file.size / 1024 / 1024 < 2
+                    if (['png', 'jpeg', 'jpg'].indexOf(suffix) < 0) {
+                        this.$message.error('上传图片只支持 png、jpeg、jpg 格式！')
+                        this.$refs.upload.clearFiles()
+                        return false
+                    }
+                    if (!size) {
+                        this.$message.error('上传文件大小不能超过 2MB!')
+                        return false
+                    }
+                    console.log("last:" + this.imageUrl)
+                    return file
+                }
+            },
+        }
+    })
+</script>
+</body>
+</html>

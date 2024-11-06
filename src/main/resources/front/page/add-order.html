@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <title>菩提阁</title>
+    <link rel="icon" href="../images/favico.ico">
+    <!--不同屏幕尺寸根字体设置-->
+    <script src="../js/base.js"></script>
+    <!--element-ui的样式-->
+    <link rel="stylesheet" href="../../backend/plugins/element-ui/index.css"/>
+    <!--引入vant样式-->
+    <link rel="stylesheet" href="../styles/vant.min.css"/>
+    <!-- 引入样式  -->
+    <link rel="stylesheet" href="../styles/index.css"/>
+    <!--本页面内容的样式-->
+    <link rel="stylesheet" href="../styles/add-order.css"/>
+</head>
+<body>
+<div id="add_order" class="app">
+    <div id="content"></div>
+    <div class="divHead">
+        <div class="divTitle">
+            <i class="el-icon-arrow-left" @click="goBack"></i>菩提阁
+        </div>
+    </div>
+    <div class="divContent">
+        <div class="divAddress">
+            <div @click="toAddressPage">
+                <div class="address">{{address.detail}}</div>
+                <div class="name">
+                    <span>{{address.consignee}}{{address.sex === '1' ? '先生' : '女士'}}</span>
+                    <span>{{address.phone}}</span>
+                </div>
+                <i class="el-icon-arrow-right"></i>
+            </div>
+            <div class="divSplit"></div>
+            <div class="divFinishTime">预计{{finishTime}}送达</div>
+        </div>
+        <div class="order">
+            <div class="title">订单明细</div>
+            <div class="divSplit"></div>
+            <div class="itemList">
+                <div class="item" v-for="(item,index) in cartData" :key="index">
+                    <el-image :src="imgPathConvert(item.image)">
+                        <div slot="error" class="image-slot">
+                            <img src="../images/noImg.png"/>
+                        </div>
+                    </el-image>
+                    <div class="desc">
+                        <div class="name">{{item.name}}</div>
+                        <div class="numPrice">
+                            <span class="num">x{{item.number}}</span>
+                            <div class="price">
+                                <span class="spanMoney">￥</span>{{item.amount}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="note">
+            <div class="title">备注</div>
+            <van-field
+                    v-model="note"
+                    rows="2"
+                    autosize
+                    type="textarea"
+                    maxlength="50"
+                    placeholder="请输入您需要备注的信息"
+                    show-word-limit
+            />
+        </div>
+        <div class="pay">
+            <div class="title">选择支付方式</div>
+            <br><br>
+            <template style="margin-top: 10px">
+                <el-radio v-model="payOption" :label="1">微信支付</el-radio>
+                <el-radio v-model="payOption" :label="2">支付宝支付</el-radio>
+            </template>
+        </div>
+
+        <!--        &lt;!&ndash;   支付等待弹窗     &ndash;&gt;
+                <el-dialog title="支付中">
+                    <span slot="footer" class="dialog-footer"></span>
+                    <el-button type="primary" @click="paySuccess">确定</el-button>
+                </el-dialog>-->
+    </div>
+    <div class="divCart">
+        <div :class="{imgCartActive: cartData && cartData.length > 0, imgCart:!cartData || cartData.length<1}"></div>
+        <div :class="{divGoodsNum:1===1, moreGoods:cartData && cartData.length > 99}"
+             v-if="cartData && cartData.length > 0">{{ goodsNum }}
+        </div>
+        <div class="divNum">
+            <span>￥</span>
+            <span>{{goodsPrice}}</span>
+        </div>
+        <div class="divPrice"></div>
+        <!--<div :class="{btnSubmitActive: cartData && cartData.length > 0, btnSubmit:!cartData || cartData.length<1}"
+             @click="goToPaySuccess">去支付
+        </div>-->
+        <div :class="{btnSubmitActive: cartData && cartData.length > 0, btnSubmit:!cartData || cartData.length<1}"
+             @click="selectPayWay" class="disBtn">去支付
+        </div>
+    </div>
+</div>
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../backend/plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../backend/plugins/element-ui/index.js"></script>
+<!-- 引入vant样式 -->
+<script src="../js/vant.min.js"></script>
+<script src="../api/address.js"></script>
+<!-- 引入axios -->
+<script src="../../backend/plugins/axios/axios.min.js"></script>
+<script src="../js/request.js"></script>
+<script src="../js/common.js"></script>
+<script src="../api/main.js"></script>
+<script src="../api/order.js"></script>
+<script>
+    new Vue({
+        el: "#add_order",
+        data() {
+            return {
+                address: {
+                    phone: '',//手机号
+                    consignee: '',//姓名
+                    detail: '',//详细地址
+                    sex: '1',
+                    id: undefined
+                },
+                finishTime: '',//送达时间
+                cartData: [],
+                note: '',//备注信息,
+                payOption: 2,//选择的支付方式  1：微信（未开发）  2：支付宝（默认）
+                isPayState: false,  //支付状态
+                payResponse: [],
+            }
+        },
+        computed: {
+            goodsNum() {
+                let num = 0
+                this.cartData.forEach(item => {
+                    num += item.number
+                })
+                if (num < 99) {
+                    return num
+                } else {
+                    return '99+'
+                }
+            },
+            goodsPrice() {
+                let price = 0
+                this.cartData.forEach(item => {
+                    price += (item.number * item.amount)
+                })
+                return price
+            }
+        },
+        created() {
+            this.initData()
+        },
+        mounted() {
+        },
+        methods: {
+            goBack() {
+                history.go(-1)
+            },
+            initData() {
+                //获取默认的地址
+                this.defaultAddress()
+                //获取购物车的商品
+                this.getCartData()
+            },
+            //获取默认地址
+            async defaultAddress() {
+                const res = await getDefaultAddressApi()
+                if (res.code === 1) {
+                    this.address = res.data
+                    this.getFinishTime()
+                } else {
+                    window.requestAnimationFrame(() => {
+                        window.location.href = '/front/page/address-edit.html'
+                    })
+                }
+            },
+            //获取送达时间
+            getFinishTime() {
+                let now = new Date()
+                let hour = now.getHours() + 1
+                let minute = now.getMinutes()
+                if (hour.toString().length < 2) {
+                }                    hour = '0' + hour
+
+                if (minute.toString().length < 2) {
+                    minute = '0' + minute
+                }
+                this.finishTime = hour + ':' + minute
+            },
+            toAddressPage() {
+                window.requestAnimationFrame(() => {
+                    window.location.href = '/front/page/address.html'
+                })
+            },
+            //获取购物车数据
+            async getCartData() {
+                const res = await cartListApi({})
+                if (res.code === 1) {
+                    this.cartData = res.data
+                } else {
+                    this.$notify({type: 'warning', message: res.msg});
+                }
+            },
+            // 支付相关
+            async selectPayWay() {
+                try {
+                    const params = {
+                        remark: this.note,
+                        payMethod: this.payOption,   //1：微信  2：支付宝
+                        addressBookId: this.address.id
+                    }
+                    const orderRes = await addOrderApi(params) //生成订单
+                    if (orderRes === 0) {//订单生成失败
+                        this.$notify({type: 'warning', message: "订单生成错误请重新操作"});
+                        return
+                    } else {
+                        if (this.payOption == 2) {//支付宝支付
+                            const res = await alipayApi()  // 发起支付宝支付请求
+                            if (res.code === 1) {     // 获取支付宝支付页面并跳转
+                                //console.log('H5-支付宝支付===============');
+                                const div = document.createElement('div');
+                                div.innerHTML = res.data.body;
+                                console.log(res.data.body);
+                                document.body.appendChild(div);
+                                if (document.forms.length > 0) {
+                                    // document.forms[0].setAttribute('target', '_self');
+                                    document.forms[0].submit();
+                                }
+                                div.remove();
+                            } else {
+                                this.$notify({type: 'warning', message: res.msg});
+                            }
+                        } else if (this.payOption == 1) {//微信支付
+                            this.$notify({type: 'warning', message: "微信支付未开发，请使用支付宝支付"});
+                            this.disablePaymentButton(); // 禁用支付按钮
+                            return
+                        } else {
+                            this.$notify({type: 'warning', message: "请选择正确的支付方式"});
+                            return
+                        }
+                    }
+                } catch (error) {
+                    // 处理错误
+                    // console.error(error);
+                    this.$notify({type: 'error', message: "支付过程中出现错误"});
+                }
+            },
+            // 查询支付状态//---> 换成了订单支付之后的回调函数
+            // async checkPaymentStatus() {
+            //     try {
+            //         let result;
+            //         do {
+            //             result = await alipayQueryApi();
+            //             if (result.code === 1) {
+            //                 this.isPayState = true; // 设置支付状态为成功
+            //                 this.$notify({ type: 'success', message: '支付成功' });
+            //                 this.paySuccess(); // 跳转到支付成功之后的页面
+            //                 return;
+            //             }
+            //             await new Promise(resolve => setTimeout(resolve, 1000)); // 等待1秒后再次查询
+            //         } while (result.code !== 1);
+            //     } catch (error) {
+            //         console.error(error);
+            //         this.$notify({ type: 'error', message: "支付状态查询出现错误" });
+            //     }
+            // },
+            // 确认支付成功
+            paySuccess() {
+                // 支付成功后跳转到支付成功页面
+                window.requestAnimationFrame(() => {
+                    window.location.replace('/front/page/pay-success.html')
+                })
+            },
+            disablePaymentButton() {
+                var querySelector = document.querySelector('disBtn');
+                querySelector.style.display = "none";
+            },
+            //网络图片路径转换
+            imgPathConvert(path) {
+                return imgPath(path)
+            },
+        }
+    })
+</script>
+</body>
+</html>
