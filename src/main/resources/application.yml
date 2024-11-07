@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   application:
-    name: reggie_take_out
+    name: meals-coming
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -33,5 +33,5 @@ mybatis-plus:
     db-config:
       id-type: ASSIGN_ID
 reggie:
-  imgPath: D:\Code\note-management\reggie_img\
+  imgPath: E:\Code\note-management\reggie_img\
 
