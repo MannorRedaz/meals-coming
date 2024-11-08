@@ -1,8 +1,8 @@
-# 瑞吉外卖
+# meals-coming--“饭来了”校园外卖外卖点餐系统
 
 #### 介绍
 ![image-20231014161651093](https://gitee.com/mannor/resouces/raw/master/PicGo/image-20231014161651093.png)
-瑞吉外卖项目完整代码，使用Sprinboot，SSM，MP，MySQL，Redis，Nginx等技术。
+“饭来了”校园外卖外卖点餐系统完整代码，使用Sprinboot，SSM，MP，MySQL，Redis，Nginx等技术。
 
 #### 软件架构
 软件架构说明
