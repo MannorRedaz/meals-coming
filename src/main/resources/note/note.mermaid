@@ -1,0 +1,18 @@
+graph LR
+    classDef startend fill:#F5EBFF,stroke:#BE8FED,stroke-width:2px
+    classDef process fill:#E5F6FF,stroke:#73A6FF,stroke-width:2px
+    classDef decision fill:#FFF6CC,stroke:#FFBC52,stroke-width:2px
+
+    A([商家申请加入]):::startend --> B(商家填写信息):::process
+    B --> C(商家提交申请):::process
+    C --> D{平台管理员接收申请}:::decision
+    D -->|是| E(管理员审核申请):::process
+    D -->|否| D
+    E --> F{审核是否通过}:::decision
+    F -->|是| G(通知商家审核通过):::process
+    F -->|否| H(通知商家审核不通过):::process
+    G --> I(商家完成入驻，开启运营):::process
+H --> J(商家修改信息):::process
+J --> C(商家重新提交申请):::process
+I --> K([流程结束]):::startend
+H --> K
