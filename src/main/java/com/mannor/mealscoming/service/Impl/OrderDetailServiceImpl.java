@@ -6,7 +6,6 @@ import com.mannor.mealscoming.dto.DishSalesDTO;
 import com.mannor.mealscoming.entity.*;
 import com.mannor.mealscoming.mapper.OrderDetailMapper;
 import com.mannor.mealscoming.service.*;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 //import org.w3c.dom.ls.LSOutput;
@@ -76,15 +75,6 @@ public class OrderDetailServiceImpl extends ServiceImpl<OrderDetailMapper, Order
     }
 
 
-    @Test
-
-   void test(){
-        LocalDateTime now = LocalDateTime.now();
-        for (int i = 1, j = 7; i <= 7; i++) {
-            System.out.println(now.minusDays(i));
-            System.out.println(now.minusDays(i-1));
-        }
-   }
 }
 
 
