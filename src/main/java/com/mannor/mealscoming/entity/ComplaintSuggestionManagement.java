@@ -16,15 +16,15 @@ public class ComplaintSuggestionManagement implements Serializable {
 
     private Long id;
 
-    private String complaint_type;
+    private String complaintType;
 
-    private String complaint_content;
+    private String complaintContent;
 
-    private Long user_id;
+    private Long userId;
 
-    private String handling_status;
+    private String handlingStatus;
 
-    private String handling_result;
+    private String handlingResult;
 
-    private LocalDateTime handling_time;
+    private LocalDateTime handlingTime;
 }

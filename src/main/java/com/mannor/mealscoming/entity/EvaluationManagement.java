@@ -16,15 +16,15 @@ public class EvaluationManagement implements Serializable {
 
     private Long id;
 
-    private String evaluation_content;
+    private String evaluationContent;
 
-    private Long user_id;
+    private Long userId;
 
-    private Long evaluated_object_id;
+    private Long evaluatedObjectId;
 
-    private String evaluated_object_type;
+    private String evaluatedObjectType;
 
-    private LocalDateTime evaluation_time;
+    private LocalDateTime evaluationTime;
 
     private Short score;
 }

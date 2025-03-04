@@ -16,13 +16,13 @@ public class CertificationManagement implements Serializable {
 
     private Long id;
 
-    private Long merchant_id;
+    private Long merchantId;
 
-    private String certification_type;
+    private String certificationType;
 
-    private String certification_file_path;
+    private String certificationFilePath;
 
-    private String certification_status;
+    private String certificationStatus;
 
-    private LocalDateTime certification_time;
+    private LocalDateTime certificationTime;
 }

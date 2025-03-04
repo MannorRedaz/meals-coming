@@ -2,6 +2,7 @@ package com.mannor.mealscoming.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.entity.ComplaintSuggestionManagement;
 import com.mannor.mealscoming.service.ComplaintSuggestionManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,13 @@ public class ComplaintSuggestionManagementController {
 
     /**
      * 新增投诉建议管理信息
+     *
      * @param complaintSuggestionManagement 投诉建议管理实体
      * @return 新增结果
      */
     @PostMapping
-    public boolean save(@RequestBody ComplaintSuggestionManagement complaintSuggestionManagement) {
-        return complaintSuggestionManagementService.save(complaintSuggestionManagement);
+    public R<Boolean> save(@RequestBody ComplaintSuggestionManagement complaintSuggestionManagement) {
+        return R.success(complaintSuggestionManagementService.save(complaintSuggestionManagement));
     }
 
     /**
@@ -32,8 +34,8 @@ public class ComplaintSuggestionManagementController {
      * @return 删除结果
      */
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Long id) {
-        return complaintSuggestionManagementService.removeById(id);
+    public R<Boolean> delete(@PathVariable Long id) {
+        return R.success(complaintSuggestionManagementService.removeById(id));
     }
 
     /**
@@ -42,8 +44,8 @@ public class ComplaintSuggestionManagementController {
      * @return 修改结果
      */
     @PutMapping
-    public boolean update(@RequestBody ComplaintSuggestionManagement complaintSuggestionManagement) {
-        return complaintSuggestionManagementService.updateById(complaintSuggestionManagement);
+    public R<Boolean> update(@RequestBody ComplaintSuggestionManagement complaintSuggestionManagement) {
+        return R.success(complaintSuggestionManagementService.updateById(complaintSuggestionManagement));
     }
 
     /**
@@ -52,8 +54,8 @@ public class ComplaintSuggestionManagementController {
      * @return 投诉建议管理信息实体
      */
     @GetMapping("/{id}")
-    public ComplaintSuggestionManagement getById(@PathVariable Long id) {
-        return complaintSuggestionManagementService.getById(id);
+    public R<ComplaintSuggestionManagement> getById(@PathVariable Long id) {
+        return R.success(complaintSuggestionManagementService.getById(id));
     }
 
     /**
@@ -61,8 +63,8 @@ public class ComplaintSuggestionManagementController {
      * @return 投诉建议管理信息列表
      */
     @GetMapping
-    public List<ComplaintSuggestionManagement> findAll() {
-        return complaintSuggestionManagementService.list();
+    public R<List<ComplaintSuggestionManagement>> findAll() {
+        return R.success(complaintSuggestionManagementService.list());
     }
 
     /**
@@ -72,10 +74,11 @@ public class ComplaintSuggestionManagementController {
      * @return 分页后的投诉建议管理信息
      */
     @GetMapping("/page")
-    public Page<ComplaintSuggestionManagement> findPage(@RequestParam Integer pageNum,
-                                                        @RequestParam Integer pageSize) {
+    public R<Page<ComplaintSuggestionManagement>> findPage(@RequestParam Integer pageNum,
+                                                           @RequestParam Integer pageSize) {
         QueryWrapper<ComplaintSuggestionManagement> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("id");
-        return complaintSuggestionManagementService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        Page<ComplaintSuggestionManagement> pageResult = complaintSuggestionManagementService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        return R.success(pageResult);
     }
 }

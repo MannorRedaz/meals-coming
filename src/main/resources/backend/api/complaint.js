@@ -1,13 +1,11 @@
 // 查询投诉建议列表接口（分页查询）
 const getComplaintList = (pageNum, pageSize) => {
-    return $axios({
-        url: '/complaintSuggestionManagement/page',
-        method: 'get',
+    return axios.get('/complaintSuggestionManagement/page', {
         params: {
             pageNum,
             pageSize
         }
-    });
+    })
 };
 
 // 删除投诉建议接口
@@ -50,13 +48,4 @@ const findAllComplaints = () => {
         url: '/complaintSuggestionManagement',
         method: 'get'
     });
-};
-
-export {
-    getComplaintList,
-    deleteComplaint,
-    editComplaint,
-    addComplaint,
-    queryComplaintById,
-    findAllComplaints
 };

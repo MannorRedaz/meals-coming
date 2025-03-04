@@ -17,13 +17,13 @@ public class DishEvaluation implements Serializable {
 
     private Long id;
 
-    private Long dish_id;
+    private Long dishId;
 
-    private Long evaluator_id;
+    private Long evaluatorId;
 
-    private String evaluation_content;
+    private String evaluationContent;
 
-    private LocalDateTime evaluation_time;
+    private LocalDateTime evaluationTime;
 
     private BigDecimal score;
 }

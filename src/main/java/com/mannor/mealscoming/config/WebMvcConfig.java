@@ -26,7 +26,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 //        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
         // swagger-ui路径资源配置
         registry.addResourceHandler("/swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-//        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 
     }
 

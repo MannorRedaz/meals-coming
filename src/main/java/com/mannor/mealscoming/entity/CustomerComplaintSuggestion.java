@@ -16,13 +16,13 @@ public class CustomerComplaintSuggestion implements Serializable {
 
     private Long id;
 
-    private String complaint_type;
+    private String complaintType;
 
-    private String complaint_content;
+    private String complaintContent;
 
-    private Long order_id;
+    private Long orderId;
 
-    private Long user_id;
+    private Long userId;
 
-    private LocalDateTime submit_time;
+    private LocalDateTime submitTime;
 }
