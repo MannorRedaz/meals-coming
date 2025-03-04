@@ -38,7 +38,8 @@ public class LoginCheckFilter implements Filter {
                 "/user/login", //移动端登录
                 "/user/sendMsg", //移动端发送短信
                 "/user/logout",
-                "/alipay/notify"
+                "/alipay/notify",
+                "/swagger-ui.html"
         };
         // 2、判断本次请求是否需要处理
         boolean check = check(urls, requestURI);

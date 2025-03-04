@@ -19,6 +19,7 @@ public class MealsComingApplication {
         log.info("前端项目地址：http://localhost:8080/front/page/login.html");
         log.info("后台项目地址：http://localhost:8080/backend/page/login/login.html");
         log.info("超级管理员项目地址：http://localhost:8080/admin/page/login/login.html");
+        log.info("API文档地址：http://localhost:8080/swagger-ui.html");
 //        System.out.println("spring项目启动成功...");
     }
 }

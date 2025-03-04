@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: meals-coming
+  # swagger静态资源配置
+  mvc:
+    static-path-pattern: /swagger-ui.html
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -32,6 +35,7 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: ASSIGN_ID
+
 reggie:
   imgPath: E:\Code\note-management\reggie_img\
 
