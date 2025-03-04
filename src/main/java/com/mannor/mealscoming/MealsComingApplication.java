@@ -7,8 +7,6 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
-
 @ServletComponentScan
 @Slf4j
 @SpringBootApplication

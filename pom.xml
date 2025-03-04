@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.mannor</groupId>
-    <artifactId>reggie_take_out</artifactId>
+    <artifactId>meals-coming</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>reggie_take_out</name>
-    <description>reggie_take_out</description>
+    <name>meals-coming</name>
+    <description>meals-coming</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
