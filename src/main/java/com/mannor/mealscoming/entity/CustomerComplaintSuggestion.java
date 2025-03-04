@@ -22,7 +22,7 @@ public class CustomerComplaintSuggestion implements Serializable {
 
     private Long order_id;
 
-    private Long complainant_id;
+    private Long user_id;
 
     private LocalDateTime submit_time;
 }

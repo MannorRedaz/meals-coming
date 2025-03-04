@@ -44,7 +44,7 @@ public class EntityCrudTest {
         merchantAuditMapper.updateById(selectMerchantAudit);
 
         // 删除
-//        merchantAuditMapper.deleteById(selectMerchantAudit.getId());
+        merchantAuditMapper.deleteById(selectMerchantAudit.getId());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class EntityCrudTest {
         ComplaintSuggestionManagement complaint = new ComplaintSuggestionManagement();
         complaint.setComplaint_type("菜品问题");
         complaint.setComplaint_content("菜品不新鲜");
-        complaint.setComplainant_id(1L);
+        complaint.setUser_id(1L);
         complaint.setHandling_status("待处理");
         complaint.setHandling_result("无");
         complaint.setHandling_time(LocalDateTime.now());
@@ -68,7 +68,7 @@ public class EntityCrudTest {
         complaintSuggestionManagementMapper.updateById(selectComplaint);
 
         // 删除
-//        complaintSuggestionManagementMapper.deleteById(selectComplaint.getId());
+        complaintSuggestionManagementMapper.deleteById(selectComplaint.getId());
     }
 
     @Test
@@ -76,10 +76,11 @@ public class EntityCrudTest {
         // 新增
         EvaluationManagement evaluation = new EvaluationManagement();
         evaluation.setEvaluation_content("服务很好");
-        evaluation.setEvaluator_id(1L);
+        evaluation.setUser_id(1L);
         evaluation.setEvaluated_object_id(1L);
         evaluation.setEvaluated_object_type("商家");
         evaluation.setEvaluation_time(LocalDateTime.now());
+        evaluation.setScore((short) 1);
         evaluationManagementMapper.insert(evaluation);
 
         // 查询
@@ -91,7 +92,7 @@ public class EntityCrudTest {
         evaluationManagementMapper.updateById(selectEvaluation);
 
         // 删除
-//        evaluationManagementMapper.deleteById(selectEvaluation.getId());
+        evaluationManagementMapper.deleteById(selectEvaluation.getId());
     }
 
     @Test
@@ -114,7 +115,7 @@ public class EntityCrudTest {
         certificationManagementMapper.updateById(selectCertification);
 
         // 删除
-//        certificationManagementMapper.deleteById(selectCertification.getId());
+        certificationManagementMapper.deleteById(selectCertification.getId());
     }
 
     @Test
@@ -137,7 +138,7 @@ public class EntityCrudTest {
         dishEvaluationMapper.updateById(selectDishEvaluation);
 
         // 删除
-//        dishEvaluationMapper.deleteById(selectDishEvaluation.getId());
+        dishEvaluationMapper.deleteById(selectDishEvaluation.getId());
     }
 
     @Test
@@ -147,7 +148,7 @@ public class EntityCrudTest {
         customerComplaint.setComplaint_type("服务问题");
         customerComplaint.setComplaint_content("服务员态度不好");
         customerComplaint.setOrder_id(1L);
-        customerComplaint.setComplainant_id(1L);
+        customerComplaint.setUser_id(1L);
         customerComplaint.setSubmit_time(LocalDateTime.now());
         customerComplaintSuggestionMapper.insert(customerComplaint);
 
@@ -160,6 +161,6 @@ public class EntityCrudTest {
         customerComplaintSuggestionMapper.updateById(selectCustomerComplaint);
 
         // 删除
-//        customerComplaintSuggestionMapper.deleteById(selectCustomerComplaint.getId());
+        customerComplaintSuggestionMapper.deleteById(selectCustomerComplaint.getId());
     }
 }

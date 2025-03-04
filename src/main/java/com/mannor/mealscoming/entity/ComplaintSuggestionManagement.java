@@ -20,7 +20,7 @@ public class ComplaintSuggestionManagement implements Serializable {
 
     private String complaint_content;
 
-    private Long complainant_id;
+    private Long user_id;
 
     private String handling_status;
 

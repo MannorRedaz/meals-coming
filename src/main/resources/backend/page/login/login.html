@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>瑞吉外卖管理端</title>
+  <title>饭来了外卖</title>
   <link rel="shortcut icon" href="../../favicon.ico">
   <!-- 引入样式 -->
   <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
@@ -42,6 +42,9 @@
               <span v-if="!loading">登录</span>
               <span v-else>登录中...</span>
             </el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-link type="primary" @click="handleRegister">想成为商家吗？快来点击注册</el-link>
           </el-form-item>
         </el-form>
       </div>
@@ -109,6 +112,9 @@
               }
             }
           })
+        },
+        handleRegister() {
+          window.location.href = '/backend/page/register/register.html'
         }
       }
     })

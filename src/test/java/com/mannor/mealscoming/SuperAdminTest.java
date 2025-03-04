@@ -21,4 +21,10 @@ public class SuperAdminTest {
         superAdminMapper.insert(superAdmin);
 
     }
+    @Test
+    public void superAdminTest2(){
+        String maonous = "maonss多从ous";
+        System.out.println(maonous.contains("的"));
+
+    }
 }
