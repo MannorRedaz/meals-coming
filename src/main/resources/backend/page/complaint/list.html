@@ -62,6 +62,10 @@
             flex: 1;
             color: #333333;
         }
+
+        .reset-btn {
+            margin-left: 10px;
+        }
     </style>
 </head>
 
@@ -82,6 +86,7 @@
                 </el-option>
             </el-select>
             <el-button type="primary" class="search-btn" @click="init">查询</el-button>
+            <el-button type="info" class="reset-btn" @click="handleReset">重置</el-button>
         </div>
         <el-table :data="tableData" stripe class="tableBox">
             <!--            <el-table-column prop="id" label="主键" min-width="80"></el-table-column>-->
