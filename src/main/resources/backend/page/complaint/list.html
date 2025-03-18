@@ -226,15 +226,15 @@
                 // 发起分页查询接口请求，传递查询条件
                 getComplaintList(this.page, this.pageSize, this.input, this.complaintType, this.handlingStatus)
                     .then(response => {
-                        // console.log(response.data);
-                        // console.log(this.page, this.pageSize, this.input, this.complaintType, this.handlingStatus)
                         let res = response.data
-                        // console.log("点击查询")
                         if (res.code === 1) {
                             this.tableData = res.data.records;
-                            this.counts = res.data.total;
-                            // console.log(this.tableData)
-                            // console.log(this.counts)
+                            // 筛选符合条件的数据(前端只展示处理状态为未处理或已处理的投诉建议)
+                            this.tableData = res.data.records.filter(record => {
+                                return record.handlingStatus === '未处理' || record.handlingStatus === '已处理';
+                            });
+                            // 更新 total 字段
+                            this.counts = this.tableData.length;
                         } else {
                             this.$message.error(res.msg);
                         }

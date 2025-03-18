@@ -2,12 +2,14 @@ package com.mannor.mealscoming.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mannor.mealscoming.common.BaseContext;
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.entity.Evaluation;
 import com.mannor.mealscoming.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
