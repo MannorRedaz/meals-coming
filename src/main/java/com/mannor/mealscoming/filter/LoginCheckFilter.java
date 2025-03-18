@@ -70,6 +70,19 @@ public class LoginCheckFilter implements Filter {
             filterChain.doFilter(request, response);
             return;
         }
+        // 4-1、判断管理员登录状态，如果已登录，则直接放行
+        if (request.getSession().getAttribute("admin") != null) {
+            log.info("用户已经登录，用户id为：{}", request.getSession().getAttribute("admin"));
+            //将id存入线程变量a
+            Long adminId = (Long) request.getSession().getAttribute("admin");
+
+            BaseContext.setCurrentId(adminId);
+            // 判断用户是否已登录，如果未登录，则重定向到登录页面
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
         // 5、如果未登录则返回未登录结果,通过输出流方式向客户端相应数据
         log.info("用户未登录");
         response.getWriter().write(JSON.toJSONString(R.error("NOT_LOGIN")));
