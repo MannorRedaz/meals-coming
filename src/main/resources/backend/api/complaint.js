@@ -1,9 +1,12 @@
 // 查询投诉建议列表接口（分页查询）
-const getComplaintList = (pageNum, pageSize) => {
-    return axios.get('/complaintSuggestionManagement/page', {
+const getComplaintList = (pageNum, pageSize, userId, complaintType, handlingStatus) => {
+    return axios.get('/complaint/page', {
         params: {
             pageNum,
-            pageSize
+            pageSize,
+            userId,
+            complaintType,
+            handlingStatus
         }
     })
 };
@@ -11,7 +14,7 @@ const getComplaintList = (pageNum, pageSize) => {
 // 删除投诉建议接口
 const deleteComplaint = (id) => {
     return $axios({
-        url: `/complaintSuggestionManagement/${id}`,
+        url: `/complaint/${id}`,
         method: 'delete'
     });
 };
@@ -19,7 +22,7 @@ const deleteComplaint = (id) => {
 // 修改投诉建议接口
 const editComplaint = (params) => {
     return $axios({
-        url: '/complaintSuggestionManagement',
+        url: '/complaint',
         method: 'put',
         data: params
     });
@@ -28,7 +31,7 @@ const editComplaint = (params) => {
 // 新增投诉建议接口
 const addComplaint = (params) => {
     return $axios({
-        url: '/complaintSuggestionManagement',
+        url: '/complaint',
         method: 'post',
         data: params
     });
@@ -37,7 +40,7 @@ const addComplaint = (params) => {
 // 查询投诉建议详情
 const queryComplaintById = (id) => {
     return $axios({
-        url: `/complaintSuggestionManagement/${id}`,
+        url: `/complaint/${id}`,
         method: 'get'
     });
 };
@@ -45,7 +48,16 @@ const queryComplaintById = (id) => {
 // 查询所有投诉建议管理信息
 const findAllComplaints = () => {
     return $axios({
-        url: '/complaintSuggestionManagement',
+        url: '/complaint',
         method: 'get'
+    });
+};
+
+// 新增 updateComplaint 接口方法
+const updateComplaint = (params) => {
+    return $axios({
+        url: '/complaint',
+        method: 'put',
+        data: params
     });
 };

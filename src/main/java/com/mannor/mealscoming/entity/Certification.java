@@ -10,21 +10,19 @@ import java.time.LocalDateTime;
 
 @Data
 @Component
-public class EvaluationManagement implements Serializable {
+public class Certification implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
 
-    private String evaluationContent;
+    private Long merchantId;
 
-    private Long userId;
+    private String certificationType;
 
-    private Long evaluatedObjectId;
+    private String certificationFilePath;
 
-    private String evaluatedObjectType;
+    private String certificationStatus;
 
-    private LocalDateTime evaluationTime;
-
-    private Short score;
+    private LocalDateTime certificationTime;
 }

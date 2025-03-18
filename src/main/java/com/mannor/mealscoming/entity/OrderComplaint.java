@@ -1,7 +1,5 @@
 package com.mannor.mealscoming.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Component
-public class CustomerComplaintSuggestion implements Serializable {
+public class OrderComplaint implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
