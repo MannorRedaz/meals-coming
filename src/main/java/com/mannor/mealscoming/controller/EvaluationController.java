@@ -80,8 +80,18 @@ public class EvaluationController {
      */
     @GetMapping("/page")
     public R<Page<Evaluation>> findPage(@RequestParam Integer pageNum,
-                                        @RequestParam Integer pageSize) {
+                                        @RequestParam Integer pageSize,
+                                        @RequestParam(required = false) String evaluationContent,
+                                        @RequestParam(required = false) String evaluatedObjectType) {
         QueryWrapper<Evaluation> queryWrapper = new QueryWrapper<>();
+        System.out.println(evaluationContent);
+        System.out.println(evaluatedObjectType);
+        if (evaluationContent != null && evaluationContent != "") {
+            queryWrapper.like("evaluation_content", evaluationContent);
+        }
+        if (evaluatedObjectType != null && evaluatedObjectType != "") {
+            queryWrapper.eq("evaluated_object_type", evaluatedObjectType);
+        }
         queryWrapper.orderByDesc("id");
         return R.success(evaluationService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }

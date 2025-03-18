@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>ECharts</title>
+    <style>
+        .main {
+            width: 1000px;
+            height: 400px;
+        }
+
+        .chart-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .data-info {
+            text-align: center;
+        }
+
+    </style>
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script src="../../plugins/Echarts/echarts.min.js"></script>
+</head>
+
+<body>
+<!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+<div id="manage-app">
+    <div class="chart-container">
+        <div id="main1" class="main"></div>
+        <div class="data-info">
+            <h3>总销售量</h3>
+            <p>{{ totalSales?totalSales:0 }}</p>
+        </div>
+    </div>
+    <div class="chart-container">
+        <div id="main2" class="main"></div>
+        <div class="data-info">
+            <h3>最畅销的种类</h3>
+            <p>{{ bestSellingProduct?bestSellingProduct:"暂无数据" }}</p>
+        </div>
+    </div>
+</div>
+
+
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../api/statistic.js"></script>
+<script>
+    new Vue({
+        el: "#manage-app",
+        data() {
+            return {
+                salesParams: {},
+                totalSales:"",
+                bestSellingProduct:""
+
+            };
+        },
+        created() {
+            // 在 created 钩子中可以做一些初始化操作
+        },
+        mounted() {
+            this.getSalesDataAndRenderChart();
+        },
+        methods: {
+            async getSalesData() {
+                try {
+                    const res = await getSalesVolume();
+                    if (res.code === 1) {
+                        this.salesParams = res.data;
+                        this.setSalesInfo()
+                        // console.log("Sales data loaded:", this.salesParams);
+                    } else {
+                        this.$message.error("获取销售数据失败: " + res.message);
+                    }
+                } catch (error) {
+                    this.$message.error("获取销售数据的时候发生了错误: " + error);
+                }
+            },
+            renderChart() {
+                var mainDiv = document.getElementById("main1");
+                var myChart = echarts.init(mainDiv);
+                var categories = Object.keys(this.salesParams.category)
+                var sales = Object.values(this.salesParams.category);
+                var option = {
+                    title: {
+                        text: "各菜品销量柱状图"
+                    },
+                    tooltip: {},
+                    legend: {
+                        data: ["销量"]
+                    },
+                    xAxis: {
+                        data: categories
+                    },
+                    yAxis: {},
+                    series: [
+                        {
+                            name: "销量",
+                            type: "bar",
+                            data: sales
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+
+                //近七天销售量折线图：
+                var chartDom = document.getElementById('main2');
+                var myChart2 = echarts.init(chartDom);
+                var sevenSalesNum = Object.values(this.salesParams.sevenSalesNum);
+                var option2;
+
+                option2 = {
+                    title: {
+                        text: "近七天销售数据"
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: ['近7天', '近6天', '近5天', '近4天', '近3天', '近2天', '近1天']
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            data: sevenSalesNum,
+                            type: 'line'
+                        }
+                    ]
+                };
+                option2 && myChart2.setOption(option2);//这样可以确保只有在option对象存在时才会设置图表的配置，避免在option为null或undefined时出现错误。
+
+            },
+            async getSalesDataAndRenderChart() {
+                await this.getSalesData();
+                this.$nextTick(() => {
+                    this.renderChart();
+                });
+            },
+            setSalesInfo() {
+                // 计算总销售量
+                let totalSales = 0;
+                for (let dish in this.salesParams.dish) {
+                    totalSales += this.salesParams.dish[dish];
+                }
+                this.totalSales = totalSales;
+
+                // 计算最畅销的商品
+                let bestSellingProduct = "";
+                let maxSales = 0;
+                for (let category in this.salesParams.category) {
+                    if (this.salesParams.category[category] > maxSales) {
+                        maxSales = this.salesParams.category[category];
+                        bestSellingProduct = category;
+                    }
+                }
+                this.bestSellingProduct = bestSellingProduct;
+            }
+
+        }
+    });
+
+</script>
+</body>
+
+</html>
