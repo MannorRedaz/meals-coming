@@ -16,11 +16,11 @@ public class MerchantAudit implements Serializable {
 
     private Long id;
 
-    private Long merchant_id;
+    private Long merchantId;
 
-    private String audit_status;
+    private String auditStatus;
 
-    private String audit_comment;
+    private String auditComment;
 
-    private LocalDateTime audit_time;
+    private LocalDateTime auditTime;
 }
