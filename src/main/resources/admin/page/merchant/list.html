@@ -1,28 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>商家管理</title>
     <!-- 引入样式 -->
-    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
-    <link rel="stylesheet" href="../../styles/common.css"/>
-    <link rel="stylesheet" href="../../styles/page.css"/>
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
+    <link rel="stylesheet" href="../../styles/common.css" />
+    <link rel="stylesheet" href="../../styles/page.css" />
     <style>
-        #merchant-app .notAdmin::after {
-            border: 0 !important;
+        #merchant-app.notAdmin::after {
+            border: 0!important;
         }
     </style>
 </head>
+
 <body>
 <div class="dashboard-container" id="merchant-app">
     <div class="container">
         <div class="tableBar">
             <el-input v-model="input" placeholder="请输入商家名称" style="width: 250px" clearable
                       @keyup.enter.native="handleQuery">
-                <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="handleQuery"></i>
+                <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer"
+                   @click="handleQuery"></i>
             </el-input>
+            <el-date-picker
+                    v-model="createTimeRange"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    style="width: 250px"
+                    @change="handleQuery"
+            ></el-date-picker>
+            <el-date-picker
+                    v-model="updateTimeRange"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    style="width: 250px"
+                    @change="handleQuery"
+            ></el-date-picker>
+            <el-select
+                    v-model="auditStatus"
+                    placeholder="请选择审核状态"
+                    style="width: 150px"
+                    @change="handleQuery"
+            >
+                <el-option label="已通过" value="已通过"></el-option>
+                <el-option label="未通过" value="未通过"></el-option>
+                <el-option label="待审核" value="待审核"></el-option>
+            </el-select>
+            <el-input v-model="auditComment" placeholder="请输入审核意见" style="width: 200px" clearable
+                      @keyup.enter.native="handleQuery"></el-input>
             <el-button type="primary" @click="addMerchantHandle('add')"> + 添加商家</el-button>
         </div>
         <el-table :data="tableData" stripe class="tableBox">
@@ -30,25 +63,24 @@
             <el-table-column prop="createTime" label="创建时间"></el-table-column>
             <el-table-column prop="updateTime" label="更新时间"></el-table-column>
             <el-table-column label="审核状态">
-                <template slot-scope="scope"> {{ scope.row.auditStatus }}</template>
+                <template slot-scope="scope">
+                    {{ scope.row.merchantAudit? scope.row.merchantAudit.auditStatus : '待审核' }}
+                </template>
             </el-table-column>
             <el-table-column label="审核意见">
-                <template slot-scope="scope"> {{ scope.row.auditComment }}</template>
+                <template slot-scope="scope">
+                    {{ scope.row.merchantAudit? scope.row.merchantAudit.auditComment : '无' }}
+                </template>
             </el-table-column>
             <el-table-column label="操作" width="160" align="center">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" class="blueBug"
-                               @click="addMerchantHandle(scope.row.id)"
-                               :class="{notAdmin:user !== 'admin'}">
+                               @click="addMerchantHandle(scope.row.id)">
                         编辑
                     </el-button>
-                    <el-button
-                            type="text"
-                            size="small"
-                            class="delBut non"
-                            @click="statusHandle(scope.row)"
-                            v-if="user === 'admin'">
-                        审核
+                    <el-button type="text" size="small" class="delBut non"
+                               @click="statusHandle(scope.row)">
+                        <span v-if="!scope.row.merchantAudit.auditComment || scope.row.merchantAudit.auditStatus === '待审核'">审核</span>
                     </el-button>
                 </template>
             </el-table-column>
@@ -79,6 +111,10 @@
         data() {
             return {
                 input: '',
+                createTimeRange: [],
+                updateTimeRange: [],
+                auditStatus: '',
+                auditComment: '',
                 counts: 0,
                 page: 1,
                 pageSize: 10,
@@ -90,7 +126,7 @@
         computed: {},
         created() {
             this.init()
-            this.user = JSON.parse(localStorage.getItem('userInfo')).username ? JSON.parse(localStorage.getItem('userInfo')).username : '超级管理员'
+            this.user = JSON.parse(localStorage.getItem('userInfo')).username? JSON.parse(localStorage.getItem('userInfo')).username : '超级管理员'
         },
         mounted() {
         },
@@ -99,18 +135,19 @@
                 const params = {
                     page: this.page,
                     pageSize: this.pageSize,
-                    // merchantName: this.input ? this.input : undefined
+                    merchantName: this.input? this.input : undefined,
+                    createTimeStart: this.createTimeRange[0]? this.createTimeRange[0] : undefined,
+                    createTimeEnd: this.createTimeRange[1]? this.createTimeRange[1] : undefined,
+                    updateTimeStart: this.updateTimeRange[0]? this.updateTimeRange[0] : undefined,
+                    updateTimeEnd: this.updateTimeRange[1]? this.updateTimeRange[1] : undefined,
+                    auditStatus: this.auditStatus? this.auditStatus : undefined,
+                    auditComment: this.auditComment? this.auditComment : undefined
                 }
-                console.log(params)
-                console.error("duandian")
                 await getMerchantPage(params).then(res => {
-                    console.log(res)
-                    console.log(res.data)
-                    console.log(res.data.records)
-                    console.log(res.code)
                     if (res.code === 1) {
-                        this.tableData = res.data.records || []
-                        this.counts = res.data.total
+                        this.tableData = res.data[0] || []
+                        this.counts = res.data[0].length
+                        // console.log(res.data)
                     }
                 }).catch(err => {
                     this.$message.error('请求出错了：' + err)
@@ -142,12 +179,13 @@
                 this.$prompt('请输入审核意见', '审核商家', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                }).then(({value}) => {
-                    auditMerchant({'id': this.id, 'audit_comment': value}).then(res => {
-                        if (String(res.code) === '1') {
+                }).then(({ value }) => {
+                    auditMerchant(this.id, value).then(res => {
+                        if (res.code === 1) {
                             this.$message.success('审核操作成功！')
                             this.handleQuery()
                         }
+
                     }).catch(err => {
                         this.$message.error('请求出错了：' + err)
                     })
@@ -157,6 +195,7 @@
                         message: '取消审核操作'
                     });
                 });
+                this.handleQuery()
             },
             handleSizeChange(val) {
                 this.pageSize = val
@@ -170,4 +209,5 @@
     })
 </script>
 </body>
+
 </html>

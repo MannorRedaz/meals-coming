@@ -1,5 +1,7 @@
 // 查询商家分页列表
 const getMerchantPage = (params) => {
+    console.log(params)
+    console.log(1111111111111111)
     return $axios({
         url: '/merchant/page',
         method: 'get',
@@ -48,14 +50,14 @@ const removeMerchant = (ids) => {
 
 
 // 审核商家
-const auditMerchant = (merchantId, auditComment) => {
+const auditMerchant = (id, auditComment) => {
     return (axios({
-        url: `/merchantAudit/${merchantId}`,
+        url: `/merchantAudit`,
         method: 'put',
         data: {
-            merchantId: merchantId,
+            merchantId: id,
             auditComment: auditComment,
-            auditStatus: ' 已审核 '
+            auditStatus: ' 已通过 '
         }
     }))
 };

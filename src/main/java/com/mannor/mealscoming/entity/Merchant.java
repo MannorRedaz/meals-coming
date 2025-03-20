@@ -1,11 +1,12 @@
 package com.mannor.mealscoming.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import cn.hutool.core.date.DateTime;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+
 
 @Data
 @Component
@@ -14,6 +15,6 @@ public class Merchant {
     private Long id;
     private Long detailId;
     private String merchantName;
-    private Date createTime;
-    private Date updateTime;
+    private LocalDateTime createTime;
+    private LocalDateTime  updateTime;
 }
