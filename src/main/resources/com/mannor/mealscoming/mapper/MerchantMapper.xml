@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mannor.mealscoming.mapper.MerchantMapper">
+
+    <select id="selectMerchantPage" resultType="com.mannor.mealscoming.entity.Merchant">
+        SELECT *
+        FROM merchant
+        WHERE 1 = 1
+        <if test="merchantName != null and merchantName != ''">
+            AND merchant_name LIKE CONCAT('%', #{merchantName}, '%')
+        </if>
+        <if test="auditStatus != null and auditStatus != ''">
+            AND id IN (SELECT merchant_id FROM merchant_audit WHERE audit_status = #{auditStatus})
+        </if>
+        <if test="auditComment != null and auditComment != ''">
+            AND id IN (SELECT merchant_id FROM merchant_audit WHERE audit_comment LIKE CONCAT('%', #{auditComment}, '%'))
+        </if>
+        <if test="createTimeEnd != null">
+            AND create_time &lt;= #{createTimeEnd}
+        </if>
+        <if test="createTimeStart != null">
+            AND create_time >= #{createTimeStart}
+        </if>
+        <if test="updateTimeEnd != null">
+            AND update_time &lt;= #{updateTimeEnd}
+        </if>
+        <if test="updateTimeStart != null">
+            AND update_time >= #{updateTimeStart}
+        </if>
+        ORDER BY update_time DESC
+    </select>
+</mapper>

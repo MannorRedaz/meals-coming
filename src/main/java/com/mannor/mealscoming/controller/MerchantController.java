@@ -1,19 +1,17 @@
 package com.mannor.mealscoming.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.entity.Merchant;
-import com.mannor.mealscoming.entity.MerchantAudit;
 import com.mannor.mealscoming.service.MerchantAuditService;
 import com.mannor.mealscoming.service.MerchantDetailsService;
 import com.mannor.mealscoming.service.MerchantService;
 import com.mannor.mealscoming.vo.MerchantVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -74,16 +72,6 @@ public class MerchantController {
     }
 
     /**
-     * 查询所有商家信息
-     *
-     * @return 商家信息列表
-     */
-    @GetMapping
-    public R<List<Merchant>> findAll() {
-        return R.success(merchantService.list());
-    }
-
-    /**
      * 分页查询商家信息
      *
      * @param page         页码
@@ -92,56 +80,17 @@ public class MerchantController {
      * @return 分页后的商家信息
      */
     @GetMapping("/page")
-    public R<ArrayList<Object>> findPage(@RequestParam Integer page,
-                                         @RequestParam Integer pageSize,
-                                         @RequestParam(required = false) String merchantName,
-                                         @RequestParam(required = false) String auditStatus,
-                                         @RequestParam(required = false) String merchantType,
-                                         @RequestParam(required = false) LocalDateTime createTimeEnd,
-                                         @RequestParam(required = false) LocalDateTime createTimeStart,
-                                         @RequestParam(required = false) LocalDateTime updateTimeEnd,
-                                         @RequestParam(required = false) LocalDateTime updateTimeStart
+    public R<List<MerchantVo>> findPage(@RequestParam Integer page,
+                                        @RequestParam Integer pageSize,
+                                        @RequestParam(required = false) String merchantName,
+                                        @RequestParam(required = false) String auditStatus,
+                                        @RequestParam(required = false) String auditComment,
+                                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createTimeEnd,
+                                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createTimeStart,
+                                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime updateTimeEnd,
+                                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime updateTimeStart
     ) {
-        QueryWrapper<Merchant> queryWrapper = new QueryWrapper<>();
-        if (merchantName != null && !merchantName.isEmpty()) {
-            queryWrapper.like("merchant_name", merchantName);
-        }
-        // 1.是审核表中的信息筛选
-//        if (auditStatus != null && !auditStatus.isEmpty()) {
-//            queryWrapper.eq("merchant_status", auditStatus);
-//        }
-//        if (merchantType != null && !merchantType.isEmpty()) {
-//            queryWrapper.eq("merchant_type", merchantType);
-//        }
-//        if (createTimeEnd != null) {
-//            queryWrapper.le("create_time", createTimeEnd);
-//        }
-//        if (createTimeStart != null) {
-//            queryWrapper.ge("create_time", createTimeStart);
-//        }
-//        if (updateTimeEnd != null) {
-//            queryWrapper.le("update_time", updateTimeEnd);
-//        }
-//        if (updateTimeStart != null) {
-//            queryWrapper.ge("update_time", updateTimeStart);
-//        }
-        queryWrapper.orderByDesc("update_time");
-        Page<Merchant> page1 = merchantService.page(new Page<>(page, pageSize), queryWrapper);
-        List<MerchantVo> merchantVos = new ArrayList<>();
-        page1.getRecords().forEach(merchant -> {
-            MerchantVo merchantVo = new MerchantVo();
-            merchantVo.setId(merchant.getId());
-            merchantVo.setDetailId(merchant.getDetailId());
-            merchantVo.setMerchantName(merchant.getMerchantName());
-            merchantVo.setCreateTime(merchant.getCreateTime());
-            merchantVo.setUpdateTime(merchant.getUpdateTime());
-            merchantVo.setMerchantDetails(merchantDetailsService.getById(merchant.getDetailId()));
-            merchantVo.setMerchantAudit(merchantAuditService.getOne(new QueryWrapper<MerchantAudit>().eq("merchant_id", merchant.getId())));
-            merchantVos.add(merchantVo);
-        });
-        ArrayList<Object> result = new ArrayList<>();
-        result.add(merchantVos);
-
-        return R.success(result);
+        return R.success(merchantService.page(page, pageSize, merchantName, auditStatus, auditComment, createTimeEnd, createTimeStart, updateTimeEnd, updateTimeStart));
+//        return R.success(null);
     }
-}    
+}

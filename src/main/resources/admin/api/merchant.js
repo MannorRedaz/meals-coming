@@ -1,11 +1,23 @@
 // 查询商家分页列表
 const getMerchantPage = (params) => {
-    console.log(params)
-    console.log(1111111111111111)
+    const newParams = { ...params };
+    // 序列化日期对象
+    if (newParams.createTimeStart) {
+        newParams.createTimeStart = newParams.createTimeStart.toISOString();
+    }
+    if (newParams.createTimeEnd) {
+        newParams.createTimeEnd = newParams.createTimeEnd.toISOString();
+    }
+    if (newParams.updateTimeStart) {
+        newParams.updateTimeStart = newParams.updateTimeStart.toISOString();
+    }
+    if (newParams.updateTimeEnd) {
+        newParams.updateTimeEnd = newParams.updateTimeEnd.toISOString();
+    }
     return $axios({
         url: '/merchant/page',
         method: 'get',
-        params: params
+        params: newParams
     });
 };
 
