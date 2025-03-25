@@ -2,86 +2,88 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>饭来了外卖 - 商家认证</title>
-  <link rel="shortcut icon" href="../../favicon.ico">
-  <!-- 引入样式 -->
-  <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
-  <link rel="stylesheet" href="../../styles/common.css">
-  <link rel="stylesheet" href="../../styles/login.css">
-  <link rel="stylesheet" href="../../styles/icon/iconfont.css" />
-  <style>
-    .body {
-      min-width: 1366px;
-    }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>饭来了外卖 - 商家认证</title>
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+    <link rel="stylesheet" href="../../styles/common.css">
+    <link rel="stylesheet" href="../../styles/login.css">
+    <link rel="stylesheet" href="../../styles/icon/iconfont.css"/>
+    <style>
+        .body {
+            min-width: 1366px;
+        }
 
-    .certification-box {
-      width: 600px;
-      margin: 50px auto;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-  </style>
+        .certification-box {
+            width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 
 <body>
 <div class="certification" id="certification-app">
-  <div class="certification-box">
-    <div class="login-form-title">
-      <img src="../../images/login/logo.png" style="width:139px;height:42px;" alt="" />
-      <h2>商家认证</h2>
+    <div class="certification-box">
+        <div class="login-form-title">
+            <img src="../../images/login/logo.png" style="width:139px;height:42px;" alt=""/>
+            <h2>商家认证</h2>
+        </div>
+        <el-form ref="certificationForm" :model="certificationForm" :rules="certificationRules" label-width="120px">
+            <el-form-item prop="accountName">
+                <el-input v-model="certificationForm.accountName" type="text" auto-complete="off" placeholder="账户名"
+                          maxlength="20" prefix-icon="iconfont icon-user"/>
+            </el-form-item>
+            <el-form-item prop="name">
+                <el-input v-model="certificationForm.name" type="text" auto-complete="off" placeholder="姓名"
+                          maxlength="20"
+                          prefix-icon="iconfont icon-user"/>
+            </el-form-item>
+            <el-form-item prop="phone">
+                <el-input v-model="certificationForm.phone" type="text" auto-complete="off" placeholder="手机号"
+                          maxlength="11"
+                          prefix-icon="iconfont icon-phone"/>
+            </el-form-item>
+            <el-form-item prop="gender">
+                <el-radio-group v-model="certificationForm.gender">
+                    <el-radio label="男">男</el-radio>
+                    <el-radio label="女">女</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item prop="idCard">
+                <el-input v-model="certificationForm.idCard" type="text" auto-complete="off" placeholder="身份证号"
+                          maxlength="18" prefix-icon="iconfont icon-idcard"/>
+            </el-form-item>
+            <el-form-item prop="businessLicense">
+                <el-upload
+                        action="/common/upload"
+                        :show-file-list="false"
+                        :on-success="handleUploadSuccess"
+                        :before-upload="beforeUpload"
+                        ref="uploadRef"
+                >
+                    <el-button size="small" type="primary">上传营业执照</el-button>
+                </el-upload>
+                <span v-if="certificationForm.businessLicense">已上传</span>
+            </el-form-item>
+            <el-form-item prop="address">
+                <el-input v-model="certificationForm.address" type="text" auto-complete="off" placeholder="店铺地址"
+                          maxlength="100" prefix-icon="iconfont icon-address"/>
+            </el-form-item>
+            <el-form-item>
+                <el-button :loading="loading" class="login-btn" size="medium" type="primary" style="width:100%;"
+                           @click.native.prevent="handleSubmit">
+                    <span v-if="!loading">提交认证</span>
+                    <span v-else>提交中...</span>
+                </el-button>
+            </el-form-item>
+        </el-form>
     </div>
-    <el-form ref="certificationForm" :model="certificationForm" :rules="certificationRules" label-width="120px">
-      <el-form-item prop="accountName">
-        <el-input v-model="certificationForm.accountName" type="text" auto-complete="off" placeholder="账户名"
-                  maxlength="20" prefix-icon="iconfont icon-user" />
-      </el-form-item>
-      <el-form-item prop="name">
-        <el-input v-model="certificationForm.name" type="text" auto-complete="off" placeholder="姓名" maxlength="20"
-                  prefix-icon="iconfont icon-user" />
-      </el-form-item>
-      <el-form-item prop="phone">
-        <el-input v-model="certificationForm.phone" type="text" auto-complete="off" placeholder="手机号" maxlength="11"
-                  prefix-icon="iconfont icon-phone" />
-      </el-form-item>
-      <el-form-item prop="gender">
-        <el-radio-group v-model="certificationForm.gender">
-          <el-radio label="男">男</el-radio>
-          <el-radio label="女">女</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item prop="idCard">
-        <el-input v-model="certificationForm.idCard" type="text" auto-complete="off" placeholder="身份证号"
-                  maxlength="18" prefix-icon="iconfont icon-idcard" />
-      </el-form-item>
-      <el-form-item prop="businessLicense">
-        <el-upload
-                action="/common/upload"
-                :show-file-list="false"
-                :on-success="handleUploadSuccess"
-                :before-upload="beforeUpload"
-                ref="uploadRef"
-        >
-          <el-button size="small" type="primary">上传营业执照</el-button>
-        </el-upload>
-        <span v-if="certificationForm.businessLicense">已上传</span>
-      </el-form-item>
-      <el-form-item prop="shopAddress">
-        <el-input v-model="certificationForm.shopAddress" type="text" auto-complete="off" placeholder="店铺地址"
-                  maxlength="100" prefix-icon="iconfont icon-address" />
-      </el-form-item>
-      <el-form-item>
-        <el-button :loading="loading" class="login-btn" size="medium" type="primary" style="width:100%;"
-                   @click.native.prevent="handleSubmit">
-          <span v-if="!loading">提交认证</span>
-          <span v-else>提交中...</span>
-        </el-button>
-      </el-form-item>
-    </el-form>
-  </div>
 </div>
 
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
@@ -93,118 +95,149 @@
 <script src="../../js/request.js"></script>
 <script src="../../js/validate.js"></script>
 <script src="../../api/login.js"></script>
+<script src="../../api/register.js"></script>
+
 
 <script>
-  new Vue({
-    el: '#certification-app',
-    data() {
-      return {
-        certificationForm: {
-          accountName: '',
-          name: '',
-          phone: '',
-          gender: '男',
-          idCard: '',
-          businessLicense: '',
-          shopAddress: ''
+    new Vue({
+        el: '#certification-app',
+        data() {
+            return {
+                certificationForm: {
+                    merchantName: '饭来了',
+                    accountName: '',
+                    name: '',
+                    phone: '',
+                    gender: '男',
+                    idCard: '',
+                    businessLicense: '',
+                    address: ''
+                },
+                loading: false
+            }
         },
-        loading: false
-      }
-    },
-    computed: {
-      certificationRules() {
-        const validateAccountName = (rule, value, callback) => {
-          if (value.length < 1) {
-            callback(new Error('请输入账户名'))
-          } else {
-            callback()
-          }
+        computed: {
+            certificationRules() {
+                const validateAccountName = (rule, value, callback) => {
+                    if (value.length < 1) {
+                        callback(new Error('请输入账户名'))
+                    } else {
+                        callback()
+                    }
+                }
+                const validateName = (rule, value, callback) => {
+                    if (value.length < 1) {
+                        callback(new Error('请输入姓名'))
+                    } else {
+                        callback()
+                    }
+                }
+                const validatePhone = (rule, value, callback) => {
+                    const phoneReg = /^1[3-9]\d{9}$/
+                    if (!phoneReg.test(value)) {
+                        callback(new Error('请输入正确的手机号'))
+                    } else {
+                        callback()
+                    }
+                }
+                const validateIdCard = (rule, value, callback) => {
+                    const idCardReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+                    if (!idCardReg.test(value)) {
+                        callback(new Error('请输入正确的身份证号'))
+                    } else {
+                        callback()
+                    }
+                }
+                const validateBusinessLicense = (rule, value, callback) => {
+                    if (!value) {
+                        callback(new Error('请上传营业执照'))
+                    } else {
+                        callback()
+                    }
+                }
+                const validateShopAddress = (rule, value, callback) => {
+                    if (value.length < 1) {
+                        callback(new Error('请输入店铺地址'))
+                    } else {
+                        callback()
+                    }
+                }
+                return {
+                    'accountName': [{'validator': validateAccountName, 'trigger': 'blur'}],
+                    'name': [{'validator': validateName, 'trigger': 'blur'}],
+                    'phone': [{'validator': validatePhone, 'trigger': 'blur'}],
+                    'idCard': [{'validator': validateIdCard, 'trigger': 'blur'}],
+                    'businessLicense': [{'validator': validateBusinessLicense, 'trigger': 'change'}],
+                    'address': [{'validator': validateShopAddress, 'trigger': 'blur'}]
+                }
+            }
+        },
+        created() {
+        },
+        methods: {
+            async handleSubmit() {
+                this.$refs.certificationForm.validate(async (valid) => {
+                    if (valid) {
+                        this.loading = true;
+                        // 构建 MerchantVo 对象
+                        const merchantVo = {
+                            // 填充 Merchant 类的属性
+                            id: null,
+                            detailId: null,
+                            merchantName: this.certificationForm.merchantName,
+                            createTime: null,
+                            updateTime: null,
+
+                            merchantAudit: {
+                                // 这里可以根据实际情况给这些字段赋值，如果不需要赋值可以留空
+                                id: null,
+                                merchantId: null,
+                                auditStatus: null,
+                                auditComment: null,
+                                auditTime: null
+                            },
+                            merchantDetails: {
+                                accountName: this.certificationForm.accountName,
+                                name: this.certificationForm.name,
+                                phone: this.certificationForm.phone,
+                                gender: this.certificationForm.gender,
+                                idCard: this.certificationForm.idCard,
+                                businessLicense: this.certificationForm.businessLicense,
+                                address: this.certificationForm.address
+                            }
+                        };
+                        // 这里可以调用后端接口提交认证信息
+                        // 示例代码，需要根据实际情况修改
+                        let res = await certificationApi(merchantVo);
+                        if (String(res.code) === '1') {
+                            this.$message.success('认证提交成功');
+                            // 跳转到等待审核页面
+                            window.location.href = 'success.html';
+                        } else {
+                            this.$message.error(res.msg);
+                        }
+                        this.loading = false;
+                    }
+                });
+            },
+            handleUploadSuccess(response, file, fileList) {
+                // 处理上传成功的逻辑，这里简单假设返回的 url 就是营业执照的路径
+                this.certificationForm.businessLicense = `/common/download?name=${response.data}`
+                this.$message.success('营业执照上传成功')
+            },
+            beforeUpload(file) {
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+                const isLt2M = file.size / 1024 / 1024 < 2
+                if (!isJPG) {
+                    this.$message.error('上传营业执照图片只能是 JPG 或 PNG 格式!')
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传营业执照图片大小不能超过 2MB!')
+                }
+                return isJPG && isLt2M
+            }
         }
-        const validateName = (rule, value, callback) => {
-          if (value.length < 1) {
-            callback(new Error('请输入姓名'))
-          } else {
-            callback()
-          }
-        }
-        const validatePhone = (rule, value, callback) => {
-          const phoneReg = /^1[3-9]\d{9}$/
-          if (!phoneReg.test(value)) {
-            callback(new Error('请输入正确的手机号'))
-          } else {
-            callback()
-          }
-        }
-        const validateIdCard = (rule, value, callback) => {
-          const idCardReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
-          if (!idCardReg.test(value)) {
-            callback(new Error('请输入正确的身份证号'))
-          } else {
-            callback()
-          }
-        }
-        const validateBusinessLicense = (rule, value, callback) => {
-          if (!value) {
-            callback(new Error('请上传营业执照'))
-          } else {
-            callback()
-          }
-        }
-        const validateShopAddress = (rule, value, callback) => {
-          if (value.length < 1) {
-            callback(new Error('请输入店铺地址'))
-          } else {
-            callback()
-          }
-        }
-        return {
-          'accountName': [{ 'validator': validateAccountName, 'trigger': 'blur' }],
-          'name': [{ 'validator': validateName, 'trigger': 'blur' }],
-          'phone': [{ 'validator': validatePhone, 'trigger': 'blur' }],
-          'idCard': [{ 'validator': validateIdCard, 'trigger': 'blur' }],
-          'businessLicense': [{ 'validator': validateBusinessLicense, 'trigger': 'change' }],
-          'shopAddress': [{ 'validator': validateShopAddress, 'trigger': 'blur' }]
-        }
-      }
-    },
-    created() {
-    },
-    methods: {
-      async handleSubmit() {
-        this.$refs.certificationForm.validate(async (valid) => {
-          if (valid) {
-            this.loading = true
-            // 这里可以调用后端接口提交认证信息
-            // 示例代码，需要根据实际情况修改
-            // let res = await certificationApi(this.certificationForm)
-            // if (String(res.code) === '1') {
-            //   this.$message.success('认证提交成功')
-            //   // 可以跳转到认证结果页面等操作
-            // } else {
-            //   this.$message.error(res.msg)
-            // }
-            this.loading = false
-          }
-        })
-      },
-      handleUploadSuccess(response, file, fileList) {
-        // 处理上传成功的逻辑，这里简单假设返回的 url 就是营业执照的路径
-        this.certificationForm.businessLicense = `/common/download?name=${response.data}`
-        this.$message.success('营业执照上传成功')
-      },
-      beforeUpload(file) {
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-        const isLt2M = file.size / 1024 / 1024 < 2
-        if (!isJPG) {
-          this.$message.error('上传营业执照图片只能是 JPG 或 PNG 格式!')
-        }
-        if (!isLt2M) {
-          this.$message.error('上传营业执照图片大小不能超过 2MB!')
-        }
-        return isJPG && isLt2M
-      }
-    }
-  })
+    })
 </script>
 </body>
 

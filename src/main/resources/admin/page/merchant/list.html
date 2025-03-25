@@ -70,7 +70,8 @@
             </el-table-column>
             <el-table-column label="审核意见">
                 <template slot-scope="scope">
-                    {{ scope.row.merchantAudit? scope.row.merchantAudit.auditComment : '无' }}
+                    {{ scope.row.merchantAudit || scope.row.merchantAudit === '' ? scope.row.merchantAudit.auditComment : '无'
+                    }}
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="160" align="center">
@@ -81,7 +82,7 @@
                     </el-button>
                     <el-button type="text" size="small" class="delBut non"
                                @click="statusHandle(scope.row)">
-                        <span v-if="!scope.row.merchantAudit.auditComment || scope.row.merchantAudit.auditStatus === '待审核'">审核</span>
+                        <span v-if="scope.row.merchantAudit && (!scope.row.merchantAudit.auditComment || scope.row.merchantAudit.auditStatus === '待审核')">审核</span>
                     </el-button>
                 </template>
             </el-table-column>

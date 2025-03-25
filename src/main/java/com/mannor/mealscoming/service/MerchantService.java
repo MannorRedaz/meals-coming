@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface MerchantService extends IService<Merchant> {
     List<MerchantVo> page(Integer page, Integer pageSize, String merchantName, String auditStatus, String auditComment, LocalDateTime createTimeEnd, LocalDateTime createTimeStart, LocalDateTime updateTimeEnd, LocalDateTime updateTimeStart);
+    Boolean register(MerchantVo merchantVo);
 }

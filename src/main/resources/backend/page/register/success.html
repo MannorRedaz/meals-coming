@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>饭来了外卖 - 等待审核</title>
+  <link rel="shortcut icon" href="../../favicon.ico">
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
+  <link rel="stylesheet" href="../../styles/common.css">
+  <link rel="stylesheet" href="../../styles/login.css">
+  <link rel="stylesheet" href="../../styles/icon/iconfont.css" />
+  <style>
+    .body {
+      min-width: 1366px;
+    }
+
+    .waiting-box {
+      width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+<div class="waiting" id="waiting-app">
+  <div class="waiting-box">
+    <img src="../../images/login/logo.png" style="width:139px;height:42px;" alt="" />
+    <h2>等待审核</h2>
+    <p>您的认证信息已提交，等待管理员审核，请耐心等待。</p>
+    <el-button type="primary" @click="goHome">返回首页登录</el-button>
+  </div>
+</div>
+
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<script>
+  new Vue({
+    el: '#waiting-app',
+    data() {
+      return {
+      }
+    },
+    created() {
+      // 页面加载时弹出提示框
+      this.$message.info('您的认证信息已提交，等待管理员审核，请耐心等待。');
+    },
+    methods: {
+      goHome() {
+        window.location.href = '../../index.html';
+      }
+    }
+  })
+</script>
+</body>
+
+</html>

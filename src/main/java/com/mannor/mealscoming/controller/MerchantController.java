@@ -2,6 +2,8 @@ package com.mannor.mealscoming.controller;
 
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.entity.Merchant;
+import com.mannor.mealscoming.entity.MerchantAudit;
+import com.mannor.mealscoming.entity.MerchantDetails;
 import com.mannor.mealscoming.service.MerchantAuditService;
 import com.mannor.mealscoming.service.MerchantDetailsService;
 import com.mannor.mealscoming.service.MerchantService;
@@ -92,5 +94,18 @@ public class MerchantController {
     ) {
         return R.success(merchantService.page(page, pageSize, merchantName, auditStatus, auditComment, createTimeEnd, createTimeStart, updateTimeEnd, updateTimeStart));
 //        return R.success(null);
+    }
+
+
+    /**
+     * 注册商家
+     *
+     * @param merchantVo 商家信息
+     * @return 注册结果
+     */
+    @PostMapping("register")
+    public R<Boolean> register(@RequestBody MerchantVo merchantVo) {
+
+        return R.success(merchantService.register(merchantVo));
     }
 }
