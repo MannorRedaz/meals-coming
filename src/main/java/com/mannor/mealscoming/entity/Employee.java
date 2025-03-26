@@ -30,6 +30,8 @@ public class Employee implements Serializable {
 
     private Integer status;
 
+    private Long merchantId;
+
     @TableField(fill = FieldFill.INSERT)//插入时填充
     private LocalDateTime createTime;
 

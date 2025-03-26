@@ -62,7 +62,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         Long merchantId = new SnowflakeGenerator().next();
         merchant.setMerchantName(merchantVo.getMerchantName());
         merchant.setId(merchantId);
-        merchant.setPassword(DigestUtils.md5DigestAsHex(merchantVo.getPassword().getBytes()));
+        merchant.setPassword(DigestUtils.md5DigestAsHex("12345".getBytes()));
         merchant.setCreateTime(LocalDateTime.now());
         merchant.setUpdateTime(LocalDateTime.now());
         this.save(merchant);

@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.BaseContext;
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.entity.Employee;
+import com.mannor.mealscoming.entity.Merchant;
 import com.mannor.mealscoming.service.EmployeeService;
+import com.mannor.mealscoming.service.MerchantService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private MerchantService merchantService;
 
 
     /**
@@ -91,9 +96,19 @@ public class EmployeeController {
         log.info("新增员工保存的参数：{}", employee);
         Long userCurrentId = BaseContext.getCurrentId();
         Employee empById = employeeService.getById(userCurrentId);
-        if (!"admin".equals(empById.getUsername())) {
-            return R.error("您不是管理员，不能添加员工！");
+        Long merchantId = 0L;
+        if (empById == null) {
+            merchantId = merchantService.getById(userCurrentId).getId();
+
+        } else {
+            if (!"admin".equals(empById.getUsername())) {
+                return R.error("您不是管理员，不能添加员工！");
+            }
+            merchantId = empById.getMerchantId();
+
         }
+        // 设置商家id
+        employee.setMerchantId(merchantId);
         // 操作service层
         employeeService.save(employee);
         return R.success("添加成功");
@@ -115,6 +130,16 @@ public class EmployeeController {
         //条件限定
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(StringUtils.isNotEmpty(name), Employee::getName, name);//姓名的分页查询
+        Long userCurrentId = BaseContext.getCurrentId();
+        Employee empById = employeeService.getById(userCurrentId);
+        Merchant merById = merchantService.getById(userCurrentId);
+
+        if (empById != null && !"admin".equals(empById.getUsername())) {
+            queryWrapper.eq(Employee::getMerchantId, empById.getMerchantId());
+        }
+        if (merById != null && !"admin".equals(merById.getUsername())) {
+            queryWrapper.eq(Employee::getMerchantId, merById.getId());
+        }
         queryWrapper.orderByDesc(Employee::getId);//排序
         //执行
         employeeService.page(pageInfo, queryWrapper);
@@ -138,7 +163,7 @@ public class EmployeeController {
         //只有管理员权限才能添加员工
         Long userCurrentId = BaseContext.getCurrentId();
         Employee empById = employeeService.getById(userCurrentId);
-        if (!"admin".equals(empById.getUsername())&&!empById.getUsername().equals(employee.getUsername())) {
+        if (!"admin".equals(empById.getUsername()) && !empById.getUsername().equals(employee.getUsername())) {
             return R.error("您不能修改管理员或其他员工的信息！");
         }
         employeeService.updateById(employee);
