@@ -1,23 +1,30 @@
 package com.mannor.mealscoming.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mannor.mealscoming.common.R;
+import com.mannor.mealscoming.entity.Employee;
 import com.mannor.mealscoming.entity.Merchant;
 import com.mannor.mealscoming.entity.MerchantAudit;
 import com.mannor.mealscoming.entity.MerchantDetails;
+import com.mannor.mealscoming.service.EmployeeService;
 import com.mannor.mealscoming.service.MerchantAuditService;
 import com.mannor.mealscoming.service.MerchantDetailsService;
 import com.mannor.mealscoming.service.MerchantService;
 import com.mannor.mealscoming.vo.MerchantVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
 @RequestMapping("/merchant")
+@Slf4j
 public class MerchantController {
 
     @Autowired
@@ -28,6 +35,9 @@ public class MerchantController {
 
     @Autowired
     private MerchantAuditService merchantAuditService;
+
+    @Autowired
+    private EmployeeService employeeService;
 
     /**
      * 新增商家信息
@@ -108,4 +118,80 @@ public class MerchantController {
 
         return R.success(merchantService.register(merchantVo));
     }
+
+    /**
+     * 商家及员工登录
+     *
+     * @param request
+     * @param merchant 包含用户名和密码的商家或员工信息
+     * @return 登录结果
+     */
+    @PostMapping("/login")
+    public R<Object> login(HttpServletRequest request, @RequestBody Merchant merchant) {
+        // 1. 将页面提交的密码`password`进行`md5`加密处理
+        String password = merchant.getPassword();
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
+
+        // 2. 根据页面提交的用户名`username`查询数据库
+        Merchant loggedMerchant = merchantService.getByAccountName(merchant.getUsername());
+
+        //2. 根据页面提交的用户名`username`查询数据库
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Employee::getUsername, merchant.getUsername());
+        Employee emp = employeeService.getOne(queryWrapper);
+
+        boolean flag = false;
+
+        // 3. 如果没有查询到则返回登录失败结果
+        if (loggedMerchant == null) {
+            if (emp == null) {
+                return R.error("登录失败！");
+            }
+            flag = true;
+        }
+        if (!flag) {
+            // 4. 密码比对，如果不一致则返回登录失败结果
+            if (!password.equals(loggedMerchant.getPassword())) {
+                return R.error("登录失败！");
+            }
+            // 6. 登录成功，将商家/员工`id`存入`Session`并返回登录成功结果
+            request.getSession().setAttribute("MerchantId", loggedMerchant.getId());
+            return R.success(loggedMerchant);
+        } else {
+            //  4. 密码比对，如果不一致则返回登录失败结果
+            if (!emp.getPassword().equals(password)) {
+                return R.error("登录失败！");
+            }
+            //  5. 查看员工状态，如果为已禁用状态，则返回员工已禁用结果
+            if (emp.getStatus() == 0) {
+                return R.error("员工已被禁用！请切换账号或者商家账号登录");
+            }
+            //  6. 登录成功，将员工`id`存入`Session`并返回登录成功结果
+            request.getSession().setAttribute("EmployeeId", emp.getId());
+            return R.success(emp);
+        }
+
+
+    }
+
+    /**
+     * 退出登录
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/logout")
+    public R<String> exit(HttpServletRequest request) {
+        // 1. 清理 session
+        try {
+            request.getSession().removeAttribute("MerchantId");
+            request.getSession().removeAttribute("EmployeeId");
+        } catch (Exception e) {
+            log.info("退出登录！");
+        }
+
+        return R.success("退出成功！");
+    }
+
+
 }

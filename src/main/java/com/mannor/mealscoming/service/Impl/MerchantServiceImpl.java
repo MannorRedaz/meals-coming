@@ -16,6 +16,7 @@ import com.mannor.mealscoming.vo.MerchantVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         Long merchantId = new SnowflakeGenerator().next();
         merchant.setMerchantName(merchantVo.getMerchantName());
         merchant.setId(merchantId);
+        merchant.setPassword(DigestUtils.md5DigestAsHex(merchantVo.getPassword().getBytes()));
         merchant.setCreateTime(LocalDateTime.now());
         merchant.setUpdateTime(LocalDateTime.now());
         this.save(merchant);
@@ -74,8 +76,6 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         merchantDetailsService.save(merchantDetails);
 
 
-
-
         // 保存商家审核信息
         MerchantAudit merchantAudit = new MerchantAudit();
         merchantAudit.setId(new SnowflakeGenerator().next());
@@ -86,5 +86,10 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         merchantAuditService.save(merchantAudit);
 
         return true;
+    }
+
+    @Override
+    public Merchant getByAccountName(String accountName) {
+        return merchantMapper.selectOne(new LambdaQueryWrapper<Merchant>().eq(Merchant::getUsername, accountName));
     }
 }

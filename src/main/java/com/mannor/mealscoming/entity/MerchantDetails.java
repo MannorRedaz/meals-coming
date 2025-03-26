@@ -18,7 +18,6 @@ public class MerchantDetails implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long id;
     private Long merchantId;
-    private String accountName;
     private String name;
     private String phone;
     private String gender;
@@ -26,8 +25,7 @@ public class MerchantDetails implements Serializable {
     private String businessLicense;
     private String address;
 
-    public MerchantDetails(String accountName, String name, String phone, String gender, String idCard, String businessLicense, String address) {
-        this.accountName = accountName;
+    public MerchantDetails(String name, String phone, String gender, String idCard, String businessLicense, String address) {
         this.name = name;
         this.phone = phone;
         this.gender = gender;

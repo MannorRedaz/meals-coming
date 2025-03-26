@@ -18,4 +18,6 @@ public class Merchant implements Serializable {
     private String merchantName;
     private LocalDateTime createTime;
     private LocalDateTime  updateTime;
+    private String username;
+    private String password;
 }
