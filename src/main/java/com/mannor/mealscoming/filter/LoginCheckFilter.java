@@ -63,7 +63,17 @@ public class LoginCheckFilter implements Filter {
             return;
         }
 
-        // 4-1、判断用户登录状态，如果已登录，则直接放行
+        // 4-2、判断商家登录状态，如果已登录，则直接放行
+        if (request.getSession().getAttribute("MerchantId") != null) {
+            log.info("用户已经登录，用户id为：{}", request.getSession().getAttribute("MerchantId"));
+            //将id存入线程变量a
+            Long merchantId = (Long) request.getSession().getAttribute("MerchantId");
+            BaseContext.setCurrentId(merchantId);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 4-3、判断用户登录状态，如果已登录，则直接放行
         if (request.getSession().getAttribute("user") != null) {
             log.info("用户已经登录，用户id为：{}", request.getSession().getAttribute("user"));
             //将id存入线程变量a
@@ -74,7 +84,7 @@ public class LoginCheckFilter implements Filter {
             filterChain.doFilter(request, response);
             return;
         }
-        // 4-1、判断管理员登录状态，如果已登录，则直接放行
+        // 4-4、判断管理员登录状态，如果已登录，则直接放行
         if (request.getSession().getAttribute("admin") != null) {
             log.info("用户已经登录，用户id为：{}", request.getSession().getAttribute("admin"));
             //将id存入线程变量a
