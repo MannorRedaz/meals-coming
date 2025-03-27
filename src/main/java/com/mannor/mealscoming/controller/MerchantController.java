@@ -193,5 +193,13 @@ public class MerchantController {
         return R.success("退出成功！");
     }
 
+    @GetMapping("list")
+    public R<List<Merchant>> list() {
+        LambdaQueryWrapper<Merchant> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(Merchant::getStatus, 1);
+        List<Merchant> list = merchantService.list(queryWrapper);
+        return R.success(list);
+    }
+
 
 }

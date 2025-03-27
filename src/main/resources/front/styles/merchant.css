@@ -1,0 +1,57 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f4f4f9;
+}
+
+.merchant-list {
+    background-color: #FF6B6B;
+    color: white;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    margin: 15px 40px;
+    transition: all 0.3s ease;
+}
+
+.merchant-list:hover {
+    background-color: #FF8E8E;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.van-dialog__content {
+    max-height: 300px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* 为滚动条添加平滑效果 */
+    scroll-behavior: smooth;
+}
+
+.van-dialog {
+    width: 90%;
+    /* 最大宽度限制，避免在大屏上太宽 */
+    max-width: 400px;
+}
+
+.close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #999;
+}
+
+.close-icon:hover {
+    color: #333;
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>优化商家切换弹出框</title>
+    <!-- 引入 Vant 样式 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@3/lib/index.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        .merchant-list {
+            background-color: #FF6B6B;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .merchant-list:hover {
+            background-color: #FF8E8E;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .van-dialog__content {
+            max-height: 300px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            /* 为滚动条添加平滑效果 */
+            scroll-behavior: smooth;
+        }
+
+        .van-dialog {
+            width: 90%;
+            /* 最大宽度限制，避免在大屏上太宽 */
+            max-width: 400px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- 假设这里有 Vue 实例挂载的元素 -->
+<div id="app">
+    <van-dialog v-model="showMerchantDialog" title="切换商家">
+        <div class="merchant-list" v-for="(merchant, index) in merchantList" :key="index"
+             @click="selectMerchant(merchant)">
+            {{ merchant.merchantName }}
+        </div>
+        <template #footer>
+            <van-button @click="showMerchantDialog = false">取消</van-button>
+        </template>
+    </van-dialog>
+</div>
+<!-- 引入 Vue 和 Vant -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vant@3/lib/vant.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                showMerchantDialog: false,
+                merchantList: [
+                    { merchantName: '商家1' },
+                    { merchantName: '商家2' },
+                    { merchantName: '商家3' },
+                    { merchantName: '商家4' },
+                    { merchantName: '商家5' },
+                    { merchantName: '商家6' },
+                    { merchantName: '商家7' },
+                    { merchantName: '商家8' },
+                    { merchantName: '商家9' },
+                    { merchantName: '商家10' }
+                ]
+            };
+        },
+        methods: {
+            selectMerchant(merchant) {
+                console.log('选择的商家:', merchant);
+                this.showMerchantDialog = false;
+            }
+        }
+    });
+</script>
+</body>
+
+</html>
