@@ -34,7 +34,7 @@
         <div class="divStatic">
             <img src="images/logo.png" class="logo"/>
             <div class="divDesc">
-                <span class="divName">菩提阁餐厅
+                <span class="divName">{{merchantName}}
                     <!-- <img src="images/exchange.png" class="logo"/>-->
                     <svg t="1743080875497" class="icon" viewBox="0 0 1024 1024" version="1.1"
                          xmlns="http://www.w3.org/2000/svg" p-id="22901" width="24" height="24" @click="exchange"><path
@@ -290,6 +290,7 @@
                 selectedMerchant: null, // 当前选中的商家
                 showMerchantDialog: false, // 控制商家切换框的显示与隐藏
                 merchantId: undefined,
+                merchantName: "饭来啦！",
             }
         },
         computed: {
@@ -330,7 +331,7 @@
         methods: {
             //初始化数据
             initData() {
-                Promise.all([categoryListApi(), cartListApi({})]).then(res => {
+                Promise.all([categoryListApi(this.merchantId), cartListApi({})]).then(res => {
                     //获取分类数据
                     if (res[0].code === 1) {
                         this.categoryList = res[0].data
@@ -361,6 +362,9 @@
                     if (res.code === 1) {
                         this.merchantList = res.data
                         // console.log('商家列表:', this.merchantList)
+                        if (this.merchantList.length > 0) {
+                            this.selectedMerchant = this.merchantList[0]
+                        }
                     } else {
                         this.$notify({type: 'warning', message: res.msg});
                     }
@@ -388,7 +392,17 @@
                 if (!this.categoryId) {
                     return
                 }
-                const res = await dishListApi({categoryId: this.categoryId, merchantId: this.merchantId, status: 1})
+
+                const params = this.merchantId === undefined ? {
+                    categoryId: this.categoryId,
+                    status: 1
+                } : {
+                    categoryId: this.categoryId,
+                    merchantId: this.merchantId,
+                    status: 1
+                }
+
+                const res = await dishListApi(params)
                 if (res.code === 1) {
                     let dishList = res.data
                     const cartData = this.cartData
@@ -411,7 +425,7 @@
                 if (!this.categoryId) {
                     return
                 }
-                const res = await setmealListApi({categoryId: this.categoryId, status: 1})
+                const res = await setmealListApi({categoryId: this.categoryId, merchantId: this.merchantId, status: 1})
                 if (res.code === 1) {
                     let dishList = res.data
                     const cartData = this.cartData
@@ -652,20 +666,22 @@
 
             },
             exchange() {
-                console.log("切换按钮被点击")
+                // console.log("切换按钮被点击")
                 this.getMerchantList().then(() => {
                     this.showMerchantDialog = true
                 })
             },
             selectMerchant(merchant) {
                 this.selectedMerchant = merchant
-                console.log(this.selectedMerchant)
+                // console.log(this.selectedMerchant)
                 this.merchantId = merchant.id
+                this.merchantName = merchant.merchantName
                 this.showMerchantDialog = false
                 // 重新查询该商家的数据
                 this.categoryId = null
                 this.activeType = 0
                 this.initData()
+                this.dishList = []
             },
         }
     })

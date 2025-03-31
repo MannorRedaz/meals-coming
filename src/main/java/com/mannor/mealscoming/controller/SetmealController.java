@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.dto.SetmealDto;
 import com.mannor.mealscoming.entity.Category;
+import com.mannor.mealscoming.entity.Merchant;
 import com.mannor.mealscoming.entity.Setmeal;
 import com.mannor.mealscoming.service.CategoryService;
+import com.mannor.mealscoming.service.MerchantService;
 import com.mannor.mealscoming.service.SetmealDishService;
 import com.mannor.mealscoming.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,10 @@ public class SetmealController {
 
     @Autowired
     private CategoryService categoryService;
+
+
+    @Autowired
+    private MerchantService merchantService;
 
     /**
      * 信息分页查询
@@ -86,7 +92,7 @@ public class SetmealController {
      * @param setmealDto
      * @return
      */
-    @CacheEvict(value = "setmealCache", allEntries = true)//参数：allEntries，表示删除setmealCache下的所有缓存数据
+//    @CacheEvict(value = "setmealCache", allEntries = true)//参数：allEntries，表示删除setmealCache下的所有缓存数据
     @PostMapping
     public R<String> save(@RequestBody SetmealDto setmealDto) {
         log.info("添加套餐，参数：setmealDto={}", setmealDto);
@@ -114,7 +120,7 @@ public class SetmealController {
      * @param ids
      * @return
      */
-    @CacheEvict(value = "setmealCache", allEntries = true)//参数：allEntries，表示删除setmealCache下的所有缓存数据
+//    @CacheEvict(value = "setmealCache", allEntries = true)//参数：allEntries，表示删除setmealCache下的所有缓存数据
     @DeleteMapping
     public R<String> deleteById(Long ids[]) {
         log.info("套餐删除的参数：setmealDto={}", ids);
@@ -130,7 +136,7 @@ public class SetmealController {
      * @param ids
      * @return
      */
-    @CacheEvict(value = "setmealCache", allEntries = true)//参数：allEntries，表示删除setmealCache下的所有缓存数据
+//    @CacheEvict(value = "setmealCache", allEntries = true)//参数：allEntries，表示删除setmealCache下的所有缓存数据
     @PostMapping("/status/{status}")
     public R<String> status(@PathVariable Integer status, Long ids[]) {
         log.info("套餐售卖状态更改参数：status={}，ids={}", status, ids);
@@ -150,11 +156,17 @@ public class SetmealController {
      * @param setmeal
      * @return
      */
-    @Cacheable(value = "setmealCache", key = "#setmeal.categoryId + '_' + #setmeal.status")
+/*    @Cacheable(value = "setmealCache", key = "#setmeal.categoryId + '_' + #setmeal.status")*/
     @GetMapping("/list")
     public R<List<Setmeal>> list(Setmeal setmeal) {
         LambdaQueryWrapper<Setmeal> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(setmeal.getCategoryId() != null, Setmeal::getCategoryId, setmeal.getCategoryId());
+        if (setmeal.getMerchantId() != null) {
+            lambdaQueryWrapper.eq(Setmeal::getMerchantId, setmeal.getMerchantId());
+        } else {
+            Merchant mer = merchantService.getOne(new LambdaQueryWrapper<Merchant>().last("LIMIT 1"));
+            lambdaQueryWrapper.eq(Setmeal::getMerchantId, mer.getId());
+        }
         lambdaQueryWrapper.eq(setmeal.getStatus() != null, Setmeal::getStatus, setmeal.getStatus());
         lambdaQueryWrapper.orderByDesc(Setmeal::getUpdateTime);
         List<Setmeal> list = setmealService.list(lambdaQueryWrapper);

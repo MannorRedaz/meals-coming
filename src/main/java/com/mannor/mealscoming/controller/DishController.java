@@ -165,8 +165,8 @@ public class DishController {
     @GetMapping("/list")
     public R<List<DishDto>> list(Dish dish) {
         log.info("/dish/list查询参数：{}" + dish);
-        List<DishDto> dishDtoList = null;
-        //动态的构造一个key，用于redis缓存
+       List<DishDto> dishDtoList = null;
+/*         //动态的构造一个key，用于redis缓存
         String key = "dish_" + dish.getCategoryId() + "_" + dish.getStatus();
         //从redis获取缓存的数据
         dishDtoList = (List<DishDto>) redisTemplate.opsForValue().get(key);
@@ -174,7 +174,7 @@ public class DishController {
         if (dishDtoList != null) {
             //如果存在，直接返回，不需要查询数据库
 //            return R.success(dishDtoList);
-        }
+        }*/
         //构造查询条件
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId());
@@ -216,9 +216,11 @@ public class DishController {
             dishDto.setSaleNum(orderDetailService.count(saleQueryWrapper));//查询月销
             return dishDto;
         }).collect(Collectors.toList());
+/*
 
         //不存在，就需要查询数据库，将查询到的数据缓存到redis中华
         redisTemplate.opsForValue().set(key, dishDtoList, 60, TimeUnit.MINUTES);//设置60分钟后过期
+*/
 
         return R.success(dishDtoList);
     }

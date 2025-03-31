@@ -29,6 +29,9 @@ public class Category implements Serializable {
     //顺序
     private Integer sort;
 
+    //
+    private Long merchantId;
+
 
     //创建时间
     @TableField(fill = FieldFill.INSERT)
@@ -51,6 +54,6 @@ public class Category implements Serializable {
 
 
     //是否删除
-   // private Integer isDeleted;
+    // private Integer isDeleted;
 
 }
