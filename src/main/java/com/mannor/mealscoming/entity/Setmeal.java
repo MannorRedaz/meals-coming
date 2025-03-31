@@ -3,6 +3,7 @@ package com.mannor.mealscoming.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Data
 public class Setmeal implements Serializable {
 
+
     private static final long serialVersionUID = 1L;
 
     private Long id;
@@ -21,6 +23,9 @@ public class Setmeal implements Serializable {
     //分类id
     private Long categoryId;
 
+
+    // 商家id
+    private Long merchantId;
 
     //套餐名称
     private String name;

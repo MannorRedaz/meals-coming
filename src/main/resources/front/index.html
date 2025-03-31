@@ -239,9 +239,9 @@
              @click="selectMerchant(merchant)">
             {{ merchant.merchantName }}
         </div>
-<!--        <template #footer>-->
-<!--            <button @click="showMerchantDialog = false">取消</button>-->
-<!--        </template>-->
+        <!--        <template #footer>-->
+        <!--            <button @click="showMerchantDialog = false">取消</button>-->
+        <!--        </template>-->
     </van-dialog>
 </div>
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
@@ -325,7 +325,7 @@
         },
         mounted() {
             this.getMerchantList()
-            this.initData()
+
         },
         methods: {
             //初始化数据
@@ -367,7 +367,11 @@
                 } catch (error) {
                     console.error('获取商家列表失败:', error)
                     this.$notify({type: 'warning', message: '获取商家列表失败'});
+                } finally {
+                    // 初始化数据获取菜品等信息
+                    this.initData()
                 }
+
             },
             //分类点击
             categoryClick(index, id, type) {
@@ -384,7 +388,7 @@
                 if (!this.categoryId) {
                     return
                 }
-                const res = await dishListApi({categoryId: this.categoryId, status: 1})
+                const res = await dishListApi({categoryId: this.categoryId, merchantId: this.merchantId, status: 1})
                 if (res.code === 1) {
                     let dishList = res.data
                     const cartData = this.cartData

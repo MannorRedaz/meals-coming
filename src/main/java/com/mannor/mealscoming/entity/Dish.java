@@ -26,6 +26,9 @@ public class Dish implements Externalizable {
     //菜品分类id
     private Long categoryId;
 
+    // 商家id
+    private Long merchantId;
+
 
     //菜品价格
     private BigDecimal price;

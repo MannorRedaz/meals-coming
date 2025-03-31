@@ -4,14 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.dto.DishDto;
-import com.mannor.mealscoming.entity.Category;
-import com.mannor.mealscoming.entity.Dish;
-import com.mannor.mealscoming.entity.DishFlavor;
-import com.mannor.mealscoming.entity.OrderDetail;
-import com.mannor.mealscoming.service.CategoryService;
-import com.mannor.mealscoming.service.DishFlavorService;
-import com.mannor.mealscoming.service.DishService;
-import com.mannor.mealscoming.service.OrderDetailService;
+import com.mannor.mealscoming.entity.*;
+import com.mannor.mealscoming.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -43,6 +37,9 @@ public class DishController {
 
     @Autowired
     private OrderDetailService orderDetailService;
+
+    @Autowired
+    private MerchantService merchantService;
 
 
     /**
@@ -167,7 +164,7 @@ public class DishController {
      */
     @GetMapping("/list")
     public R<List<DishDto>> list(Dish dish) {
-        log.info("/dish/list查询参数：{}"+dish);
+        log.info("/dish/list查询参数：{}" + dish);
         List<DishDto> dishDtoList = null;
         //动态的构造一个key，用于redis缓存
         String key = "dish_" + dish.getCategoryId() + "_" + dish.getStatus();
@@ -181,6 +178,14 @@ public class DishController {
         //构造查询条件
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId());
+        // 添加商家条件
+        if (dish.getMerchantId() != null) {
+            queryWrapper.eq(Dish::getMerchantId, dish.getMerchantId());
+        } else {
+            Merchant mer = merchantService.getOne(new LambdaQueryWrapper<Merchant>().last("LIMIT 1"));
+            queryWrapper.eq(Dish::getMerchantId, mer.getId());
+        }
+
         //添加条件，查询状态为1（起售状态）的菜品
         queryWrapper.eq(Dish::getStatus, 1);
 
