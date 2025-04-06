@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.BaseContext;
 import com.mannor.mealscoming.common.R;
+import com.mannor.mealscoming.entity.Employee;
 import com.mannor.mealscoming.entity.Evaluation;
 import com.mannor.mealscoming.entity.Orders;
+import com.mannor.mealscoming.service.EmployeeService;
 import com.mannor.mealscoming.service.EvaluationService;
 import com.mannor.mealscoming.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,6 +29,9 @@ public class EvaluationController {
 
     @Autowired
     private OrdersService ordersService;
+
+    @Autowired
+    private EmployeeService employeeService;
 
     /**
      * 新增评价管理信息
@@ -115,10 +121,17 @@ public class EvaluationController {
     public R<Page<Evaluation>> findPage(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(required = false) String evaluationContent,
-                                        @RequestParam(required = false) String evaluatedObjectType) {
+                                        @RequestParam(required = false) String evaluatedObjectType, HttpServletRequest request) {
         QueryWrapper<Evaluation> queryWrapper = new QueryWrapper<>();
         System.out.println(evaluationContent);
         System.out.println(evaluatedObjectType);
+        // 构造商家查询条件
+        Object merchantId = request.getSession().getAttribute("MerchantId");
+        if (merchantId == null) {
+            merchantId = request.getSession().getAttribute("EmployeeId");
+            merchantId = employeeService.getOne(new LambdaQueryWrapper<Employee>().eq(Employee::getId, merchantId)).getMerchantId();
+        }
+        queryWrapper.eq("merchant_id", merchantId);
         if (evaluationContent != null && evaluationContent != "") {
             queryWrapper.like("evaluation_content", evaluationContent);
         }

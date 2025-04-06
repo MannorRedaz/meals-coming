@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.entity.Orders;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 public interface OrdersService extends IService<Orders> {
@@ -12,7 +13,7 @@ public interface OrdersService extends IService<Orders> {
 
     void submit(Orders orders);
 
-    Page<Orders> pageOrders(int page, int pageSize, String number, Date beginTime, Date endTime);
+    Page<Orders> pageOrders(int page, int pageSize, String number, Date beginTime, Date endTime, HttpServletRequest request);
 
     R<Page> pageOrdersDto(Integer page, Integer pageSize);
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @RestController
@@ -29,7 +30,7 @@ public class OrdersController {
     @GetMapping("/userPage")
     public R<Page> userPage(Integer page, Integer pageSize) {
         log.info("订单的查询：page={},pagesize={}", page, pageSize);
-        return ordersService.pageOrdersDto(page,pageSize);
+        return ordersService.pageOrdersDto(page, pageSize);
     }
 
     /**
@@ -42,9 +43,9 @@ public class OrdersController {
     @GetMapping("/page")
     public R<Page<Orders>> page(int page, int pageSize, String number,
                                 @DateTimeFormat(pattern = "yyyy-mm-dd HH:mm:ss") Date beginTime,
-                                @DateTimeFormat(pattern = "yyyy-mm-dd HH:mm:ss") Date endTime) {
+                                @DateTimeFormat(pattern = "yyyy-mm-dd HH:mm:ss") Date endTime, HttpServletRequest request) {
         log.info("订单分页查询：page={}，pageSize={}，number={},beginTime={},endTime={}", page, pageSize, number, beginTime, endTime);
-        Page<Orders> ordersPage = ordersService.pageOrders(page, pageSize, number, beginTime, endTime);
+        Page<Orders> ordersPage = ordersService.pageOrders(page, pageSize, number, beginTime, endTime, request);
         return R.success(ordersPage);
     }
 

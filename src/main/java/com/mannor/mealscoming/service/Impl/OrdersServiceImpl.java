@@ -16,7 +16,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -45,6 +48,9 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
 
     @Autowired
     private OrdersService ordersService;
+
+    @Autowired
+    private EmployeeService employeeService;
 
     /**
      * 支付订单处理
@@ -117,12 +123,20 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
     }
 
     @Override
-    public Page<Orders> pageOrders(int page, int pageSize, String number, Date beginTime, Date endTime) {
+    public Page<Orders> pageOrders(int page, int pageSize, String number, Date beginTime, Date endTime, HttpServletRequest request) {
         // 根据以上信息进行分页查询。
         // 创建分页对象
         Page<Orders> pageInfo = new Page<>(page, pageSize);
+
+        // 构造商家查询条件
+        Object merchantId = request.getSession().getAttribute("MerchantId");
+        if (merchantId == null) {
+            merchantId = request.getSession().getAttribute("EmployeeId");
+            merchantId = employeeService.getOne(new LambdaQueryWrapper<Employee>().eq(Employee::getId, merchantId)).getMerchantId();
+        }
         // 创建查询条件对象。
         LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Orders::getMerchantId, merchantId);
         queryWrapper.like(StringUtils.isNotEmpty(number), Orders::getNumber, number);
         if (beginTime != null) {
             queryWrapper.between(Orders::getOrderTime, beginTime, endTime);

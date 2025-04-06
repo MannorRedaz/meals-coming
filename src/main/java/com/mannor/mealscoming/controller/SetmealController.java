@@ -5,12 +5,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.dto.SetmealDto;
 import com.mannor.mealscoming.entity.Category;
+import com.mannor.mealscoming.entity.Employee;
 import com.mannor.mealscoming.entity.Merchant;
 import com.mannor.mealscoming.entity.Setmeal;
-import com.mannor.mealscoming.service.CategoryService;
-import com.mannor.mealscoming.service.MerchantService;
-import com.mannor.mealscoming.service.SetmealDishService;
-import com.mannor.mealscoming.service.SetmealService;
+import com.mannor.mealscoming.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +17,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +40,9 @@ public class SetmealController {
     @Autowired
     private MerchantService merchantService;
 
+    @Autowired
+    private EmployeeService employeeService;
+
     /**
      * 信息分页查询
      *
@@ -50,14 +52,21 @@ public class SetmealController {
      * @return
      */
     @GetMapping("/page")
-    public R<Page> page(Integer page, Integer pageSize, String name) {
+    public R<Page> page(Integer page, Integer pageSize, String name, HttpServletRequest request) {
         log.info("套餐管理分页查询的参数：page:{},pageSize:{},name:{}", page, pageSize, name);
         //构造分页构造器
         Page<Setmeal> pageInfo = new Page(page, pageSize);
         Page<SetmealDto> dtoPage = new Page<>();
+        // 构造商家查询条件
+        Object merchantId = request.getSession().getAttribute("MerchantId");
+        if (merchantId == null) {
+            merchantId = request.getSession().getAttribute("EmployeeId");
+            merchantId = employeeService.getOne(new LambdaQueryWrapper<Employee>().eq(Employee::getId, merchantId)).getMerchantId();
+        }
 
         //条件限定
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(merchantId != null, Setmeal::getMerchantId, merchantId);
         queryWrapper.like(StringUtils.isNotEmpty(name), Setmeal::getName, name);//套餐管理的分页查询
         queryWrapper.orderByDesc(Setmeal::getUpdateTime);//排序
 
@@ -94,9 +103,9 @@ public class SetmealController {
      */
 //    @CacheEvict(value = "setmealCache", allEntries = true)//参数：allEntries，表示删除setmealCache下的所有缓存数据
     @PostMapping
-    public R<String> save(@RequestBody SetmealDto setmealDto) {
+    public R<String> save(@RequestBody SetmealDto setmealDto,HttpServletRequest request) {
         log.info("添加套餐，参数：setmealDto={}", setmealDto);
-        setmealService.saveWithDish(setmealDto);
+        setmealService.saveWithDish(setmealDto,request);
 
         return R.success("套餐添加成功!");
     }

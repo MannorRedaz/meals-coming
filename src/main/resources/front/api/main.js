@@ -2,7 +2,7 @@
 function categoryListApi(merchantId) {
     // console.log(merchantId);
     return $axios({
-        'url': '/category/list',
+        'url': '/category/listu',
         'method': 'get',
         params: merchantId === undefined ? {} : {merchantId: merchantId}
     })

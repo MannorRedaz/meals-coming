@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mannor.mealscoming.common.CustomException;
 import com.mannor.mealscoming.dto.SetmealDto;
+import com.mannor.mealscoming.entity.Employee;
 import com.mannor.mealscoming.entity.Setmeal;
 import com.mannor.mealscoming.entity.SetmealDish;
 import com.mannor.mealscoming.mapper.SetmealMapper;
+import com.mannor.mealscoming.service.EmployeeService;
 import com.mannor.mealscoming.service.SetmealDishService;
 import com.mannor.mealscoming.service.SetmealService;
 import com.mannor.mealscoming.service.ShoppingCartService;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +37,9 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
     @Autowired
     private ShoppingCartService shoppingCartService;
 
+    @Autowired
+    private EmployeeService employeeService;
+
     /**
      * 添加套餐
      *
@@ -41,7 +47,14 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
      */
     @Transactional
     @Override
-    public void saveWithDish(SetmealDto setmealDto) {
+    public void saveWithDish(SetmealDto setmealDto, HttpServletRequest request) {
+        // 构造商家查询条件
+        Object merchantId = request.getSession().getAttribute("MerchantId");
+        if (merchantId == null) {
+            merchantId = request.getSession().getAttribute("EmployeeId");
+            merchantId = employeeService.getOne(new LambdaQueryWrapper<Employee>().eq(Employee::getId, merchantId)).getMerchantId();
+        }
+        setmealDto.setMerchantId((Long) merchantId);
         //添加数据到setmeal表
         this.save(setmealDto);
 

@@ -53,8 +53,19 @@ const getCategoryList = (params) => {
 
 // 查菜品列表的接口
 const queryDishList = (params) => {
+  console.log("33333")
+
   return $axios({
     url: '/dish/list',
+    method: 'get',
+    params
+  })
+}// 查菜品列表的接口
+const queryDishListS = (params) => {
+  console.log("22222")
+
+  return $axios({
+    url: '/dish/listd',
     method: 'get',
     params
   })
