@@ -233,7 +233,7 @@
                                 //console.log('H5-支付宝支付===============');
                                 const div = document.createElement('div');
                                 div.innerHTML = res.data.body;
-                                console.log(res.data.body);
+                                // console.log(res.data.body);
                                 document.body.appendChild(div);
                                 if (document.forms.length > 0) {
                                     // document.forms[0].setAttribute('target', '_self');
@@ -246,10 +246,10 @@
                         } else if (this.payOption == 1) {//微信支付
                             this.$notify({type: 'warning', message: "微信支付未开发，请使用支付宝支付"});
                             this.disablePaymentButton(); // 禁用支付按钮
-                            return
+
                         } else {
                             this.$notify({type: 'warning', message: "请选择正确的支付方式"});
-                            return
+
                         }
                     }
                 } catch (error) {

@@ -1,8 +1,11 @@
 package com.mannor.mealscoming.dto;
 
+import com.mannor.mealscoming.entity.Evaluation;
+import com.mannor.mealscoming.entity.Merchant;
 import com.mannor.mealscoming.entity.OrderDetail;
 import com.mannor.mealscoming.entity.Orders;
 import lombok.Data;
+
 import java.util.List;
 
 @Data
@@ -19,5 +22,5 @@ public class OrdersDto extends Orders {
     private String sumNum;
 
     private List<OrderDetail> orderDetails;
-	
+    private List<Evaluation> evaluations;
 }

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <title>订单评价</title>
+    <link rel="icon" href="../images/favico.ico">
+    <!-- 不同屏幕尺寸根字体设置 -->
+    <script src="../js/base.js"></script>
+    <!-- element-ui的样式 -->
+    <link rel="stylesheet" href="../../backend/plugins/element-ui/index.css"/>
+    <!-- 引入vant样式 -->
+    <link rel="stylesheet" href="../styles/vant.min.css"/>
+    <!-- 引入样式  -->
+    <link rel="stylesheet" href="../styles/index.css"/>
+    <!--    &lt;!&ndash; 本页面内容的样式 &ndash;&gt;-->
+    <!--    <link rel="stylesheet" href="../styles/address.css"/>-->
+    <!--本页面内容的样式-->
+    <link rel="stylesheet" href="../styles/evaluation.css"/>
+</head>
+
+<body>
+<div id="evaluation" class="app">
+    <div class="divHead">
+        <div class="divTitle">
+            <i class="el-icon-arrow-left" @click="goBack"></i>订单评价
+        </div>
+    </div>
+    <div class="divContent">
+        <el-form :model="evaluationForm" ref="evaluationFormRef" label-width="120px">
+            <el-form-item label="评价内容">
+                <el-input v-model="evaluationForm.evaluationContent" type="textarea" rows="4"></el-input>
+            </el-form-item>
+            <el-form-item label="评分">
+                <el-rate v-model="evaluationForm.score"></el-rate>
+            </el-form-item>
+            <el-form-item>
+                <el-button @click="submitEvaluation" v-if="submitFlag">提交评价</el-button>
+                <el-button @click="goBack" v-else>返回订单列表</el-button>
+
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+<!-- 开发环境版本,包含了有帮助的命令行警告 -->
+<script src="../../backend/plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../backend/plugins/element-ui/index.js"></script>
+<!-- 引入vant样式 -->
+<script src="../js/vant.min.js"></script>
+<script src="../api/address.js"></script>
+<!-- 引入axios -->
+<script src="../../backend/plugins/axios/axios.min.js"></script>
+<script src="../api/userInfo.js"></script>
+<script src="../js/request.js"></script>
+<script>
+    new Vue({
+        el: "#evaluation",
+        data() {
+            return {
+                evaluationForm: {
+                    evaluationContent: '',
+                    score: 0,
+                    // 假设从 URL 获取订单 ID
+                    evaluatedObjectId: null,
+                    // 假设用户 ID 从登录信息获取，这里简单模拟
+                    userId: 1,
+                    evaluatedObjectType: '订单'
+                },
+                userPhone: null,
+                submitFlag: true
+            };
+        },
+        created() {
+            // 获取 URL 参数
+            const urlParams = new URLSearchParams(window.location.search);
+            this.evaluationForm.evaluatedObjectId = urlParams.get('orderId');
+            userInfoApi(() => {
+                this.userPhone = userInfo.id;
+            })
+            this.getEvaluation()
+
+        },
+        methods: {
+            goBack() {
+                history.go(-1);
+            },
+            async submitEvaluation() {
+                try {
+
+                    if (this.evaluationForm.score === 0) {
+                        this.$message.error('请选择评分');
+                        return
+                    }
+                    if (this.evaluationForm.evaluationContent.length <= 0) {
+                        this.$message.error('请填写评价内容');
+                        return
+                    }
+                    // 假设这里有一个 API 用于提交评价
+                    const res = await axios.post('/evaluation', this.evaluationForm);
+                    if (res.data.code === 1) {
+                        this.$message.success('评价提交成功');
+                        // 提交成功后返回上一页
+                        this.goBack();
+                    } else {
+                        this.$message.error(res.data.msg);
+                    }
+                } catch (error) {
+                    this.$message.error('提交评价时发生错误');
+                }
+            },
+            async getEvaluation() {
+                // 假设这里有一个 API 用于获取评价
+                axios.get(`/evaluation/${this.evaluationForm.evaluatedObjectId}`)
+                    .then(response => {
+                        if (response.data.code === 1) {
+                            this.evaluationForm = response.data.data;
+                            if (response.data.data !== null || response.data.data !== "") {
+                                this.submitFlag = false;
+                            }
+                        } else {
+                            this.$message.error(response.data.msg);
+                        }
+                    })
+                    .catch(error => {
+                        this.$message.error('获取评价时发生错误');
+                    })
+            }
+        }
+    });
+</script>
+</body>
+
+</html>

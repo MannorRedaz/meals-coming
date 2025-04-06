@@ -1,5 +1,6 @@
 package com.mannor.mealscoming.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.BaseContext;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -26,7 +28,10 @@ public class EvaluationController {
      * @return 新增结果
      */
     @PostMapping
+
     public R<Boolean> save(@RequestBody Evaluation evaluation) {
+        evaluation.setUserId(BaseContext.getCurrentId());
+        evaluation.setEvaluationTime(LocalDateTime.now());
         return R.success(evaluationService.save(evaluation));
     }
 
@@ -60,7 +65,7 @@ public class EvaluationController {
      */
     @GetMapping("/{id}")
     public R<Evaluation> getById(@PathVariable Long id) {
-        return R.success(evaluationService.getById(id));
+        return R.success(evaluationService.getOne(new LambdaQueryWrapper<Evaluation>().eq(Evaluation::getEvaluatedObjectId, id)));
     }
 
     /**

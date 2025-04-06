@@ -94,7 +94,8 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         orders.setId(orderId);
         orders.setOrderTime(LocalDateTime.now());
         orders.setCheckoutTime(LocalDateTime.now());
-        orders.setStatus(1);//设置订单状态为待付款，等支付成功回调函数执行，再修改为2
+//        orders.setStatus(1);//设置订单状态为待付款，等支付成功回调函数执行，再修改为2
+        orders.setStatus(2);//设置订单状态为待派送
         orders.setAmount(new BigDecimal(amount.get()));//总金额
         orders.setUserId(userId);
         orders.setNumber(String.valueOf(orderId));
@@ -138,7 +139,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         Page ordersDtopageInfo = new Page<>();
         LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByDesc(Orders::getOrderTime);
-        queryWrapper.eq(Orders::getUserId,BaseContext.getCurrentId());//过滤掉不是当前用户的订单
+        queryWrapper.eq(Orders::getUserId, BaseContext.getCurrentId());//过滤掉不是当前用户的订单
         ordersService.page(pageInfo, queryWrapper);
         BeanUtils.copyProperties(pageInfo, ordersDtopageInfo, "records");//第三个参数是Page对象中忽略的属性，我们需要自己设置该属性
         //将pageInfo（orders数据）封装到->ordersDto->返回给前端

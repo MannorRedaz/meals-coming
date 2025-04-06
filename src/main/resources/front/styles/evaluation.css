@@ -1,0 +1,222 @@
+/* 整体页面样式调整 */
+.app {
+    background-color: #f4f4f4;
+    /*padding: 20px;*/
+}
+
+/* 头部样式 */
+.divHead {
+    background-color: #fff;
+    /*padding: 10px 20px;*/
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.divTitle {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 内容区域样式 */
+.divContent {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* 表单样式 */
+el-form {
+    width: 100%;
+}
+
+el-form-item {
+    margin-bottom: 20px;
+}
+
+el-input textarea {
+    min-height: 120px;
+}
+
+/* 评分组件样式 */
+el-rate {
+    font-size: 20px;
+}
+
+/* 提交按钮样式 */
+el-button {
+    background-color: #409eff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+el-button:hover {
+    background-color: #66b1ff;
+}
+
+
+#evaluation .divHead {
+    width: 100%;
+    height: 88rem;
+    opacity: 1;
+    background: #333333;
+    position: relative;
+}
+
+#evaluation .divHead .divTitle {
+    font-size: 18rem;
+    font-family: PingFangSC, PingFangSC-Regular;
+    font-weight: 500;
+    text-align: center;
+    color: #ffffff;
+    line-height: 25rem;
+    letter-spacing: 0;
+    position: absolute;
+    bottom: 13rem;
+    width: 100%;
+}
+
+#evaluation .divHead .divTitle i {
+    position: absolute;
+    left: 16rem;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+#evaluation .divContent {
+    height: calc(100vh - 157rem);
+    overflow: auto;
+}
+
+#evaluation .divContent .divItem {
+    height: 128rem;
+    opacity: 1;
+    background: #ffffff;
+    border-radius: 6rem;
+    margin-top: 10rem;
+    margin-left: 10rem;
+    margin-right: 9rem;
+    padding-left: 12rem;
+    position: relative;
+}
+
+#evaluation .divContent .divItem > img {
+    width: 16rem;
+    height: 16rem;
+    position: absolute;
+    top: 40rem;
+    right: 24rem;
+}
+
+#evaluation .divContent .divItem .divDefault img {
+    width: 16rem;
+    height: 16rem;
+    opacity: 1;
+}
+
+#evaluation .divContent .divItem .divevaluation {
+    font-size: 14rem;
+    font-family: PingFangSC, PingFangSC-Regular;
+    font-weight: 400;
+    text-align: left;
+    color: #333333;
+    line-height: 20rem;
+    letter-spacing: 0;
+    padding-top: 21rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 280rem;
+}
+
+#evaluation .divContent .divItem .divevaluation span {
+    width: 34rem;
+    height: 20rem;
+    opacity: 1;
+    font-size: 12rem;
+    display: inline-block;
+    text-align: center;
+    margin-right: 4rem;
+    margin-bottom: 10rem;
+}
+
+#evaluation .divContent .divItem .divUserPhone span {
+    height: 20rem;
+    opacity: 1;
+    font-size: 14rem;
+    font-family: PingFangSC, PingFangSC-Regular;
+    font-weight: 400;
+    text-align: left;
+    color: #999999;
+    line-height: 20rem;
+    letter-spacing: 0;
+    margin-right: 10rem;
+}
+
+#evaluation .divContent .divItem .divUserPhone span:first-child {
+    margin-right: 2rem;
+}
+
+#evaluation .divContent .divItem .divevaluation .spanCompany {
+    background-color: #e1f1fe;
+}
+
+#evaluation .divContent .divItem .divevaluation .spanHome {
+    background: #fef8e7;
+}
+
+#evaluation .divContent .divItem .divevaluation .spanSchool {
+    background: #e7fef8;
+}
+
+#evaluation .divContent .divItem .divSplit {
+    height: 1px;
+    opacity: 1;
+    background: #efefef;
+    border: 0;
+    margin-top: 16rem;
+    margin-bottom: 10rem;
+    margin-right: 10rem;
+}
+
+#evaluation .divContent .divItem .divDefault {
+    height: 18rem;
+    opacity: 1;
+    font-size: 13rem;
+    font-family: PingFangSC, PingFangSC-Regular;
+    font-weight: 400;
+    text-align: left;
+    color: #333333;
+    line-height: 18rem;
+    letter-spacing: 0;
+}
+
+#evaluation .divContent .divItem .divDefault img {
+    height: 18rem;
+    width: 18rem;
+    margin-right: 5rem;
+    vertical-align: bottom;
+}
+
+#evaluation .divBottom {
+    height: 36rem;
+    opacity: 1;
+    background: #ffc200;
+    border-radius: 18rem;
+    opacity: 1;
+    font-size: 15rem;
+    font-family: PingFangSC, PingFangSC-Regular;
+    font-weight: 500;
+    text-align: center;
+    color: #333333;
+    line-height: 36rem;
+    letter-spacing: 0;
+    position: absolute;
+    bottom: 23rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 334rem;
+}

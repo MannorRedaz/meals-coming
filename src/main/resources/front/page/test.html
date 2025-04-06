@@ -3,53 +3,89 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>优化商家切换弹出框</title>
     <!-- 引入 Vant 样式 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@3/lib/index.css">
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background-color: #f4f4f9;
         }
 
-        .merchant-list {
-            background-color: #FF6B6B;
-            color: white;
-            padding: 20px 30px;
+        #app {
+            padding: 16px;
+        }
+
+        .divBody {
+            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            font-size: 24px;
-            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+        }
+
+        .van-cell {
+            border-bottom: 1px solid #eee;
+            padding: 16px 0;
+        }
+
+        .timeStatus {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .dishList {
+            margin-bottom: 8px;
+        }
+
+        .dishList .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .result .price {
+            color: #f60;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btnAgain,
+        .btnEvaluate {
+            background-color: #f60;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
             text-align: center;
-            margin: 10px;
-            transition: all 0.3s ease;
+            cursor: pointer;
+            flex: 1;
         }
 
-        .merchant-list:hover {
-            background-color: #FF8E8E;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .van-dialog__content {
-            max-height: 300px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            /* 为滚动条添加平滑效果 */
-            scroll-behavior: smooth;
-        }
-
-        .van-dialog {
-            width: 90%;
-            /* 最大宽度限制，避免在大屏上太宽 */
-            max-width: 400px;
+        .btnAgain:hover,
+        .btnEvaluate:hover {
+            background-color: #e55;
         }
     </style>
 </head>
@@ -57,15 +93,27 @@
 <body>
 <!-- 假设这里有 Vue 实例挂载的元素 -->
 <div id="app">
-    <van-dialog v-model="showMerchantDialog" title="切换商家">
-        <div class="merchant-list" v-for="(merchant, index) in merchantList" :key="index"
-             @click="selectMerchant(merchant)">
-            {{ merchant.merchantName }}
-        </div>
-        <template #footer>
-            <van-button @click="showMerchantDialog = false">取消</van-button>
-        </template>
-    </van-dialog>
+    <div class="divBody" v-if="orderList.length > 0">
+        <van-cell v-for="(order, index) in orderList" :key="index" class="item">
+            <div class="timeStatus">
+                <span>{{order.orderTime}}</span>
+                <span>{{getStatus(order.status)}}</span>
+            </div>
+            <div class="dishList">
+                <div v-for="(item, index) in order.orderDetails" :key="index" class="item">
+                    <span>{{item.name}}</span>
+                    <span>x{{item.number}}</span>
+                </div>
+            </div>
+            <div class="result">
+                <span>共{{order.sumNum}} 件商品,实付</span><span class="price">￥{{order.amount}}</span>
+            </div>
+            <div class="btn" v-if="order.status === 4">
+                <div class="btnAgain" @click="addOrderAgain(order)">再来一单</div>
+                <div class="btnEvaluate" @click="evaluateOrder(order)">评价</div>
+            </div>
+        </van-cell>
+    </div>
 </div>
 <!-- 引入 Vue 和 Vant -->
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
@@ -75,25 +123,40 @@
         el: '#app',
         data() {
             return {
-                showMerchantDialog: false,
-                merchantList: [
-                    { merchantName: '商家1' },
-                    { merchantName: '商家2' },
-                    { merchantName: '商家3' },
-                    { merchantName: '商家4' },
-                    { merchantName: '商家5' },
-                    { merchantName: '商家6' },
-                    { merchantName: '商家7' },
-                    { merchantName: '商家8' },
-                    { merchantName: '商家9' },
-                    { merchantName: '商家10' }
+                orderList: [
+                    {
+                        orderTime: '2024-10-01 12:00',
+                        status: 4,
+                        orderDetails: [
+                            { name: '宫保鸡丁', number: 1 },
+                            { name: '米饭', number: 2 }
+                        ],
+                        sumNum: 3,
+                        amount: 25
+                    }
                 ]
             };
         },
         methods: {
-            selectMerchant(merchant) {
-                console.log('选择的商家:', merchant);
-                this.showMerchantDialog = false;
+            getStatus(status) {
+                switch (status) {
+                    case 1:
+                        return '待付款';
+                    case 2:
+                        return '已付款';
+                    case 3:
+                        return '正在派送';
+                    case 4:
+                        return '已完成';
+                    default:
+                        return '未知状态';
+                }
+            },
+            addOrderAgain(order) {
+                console.log('再来一单:', order);
+            },
+            evaluateOrder(order) {
+                console.log('评价订单:', order);
             }
         }
     });
