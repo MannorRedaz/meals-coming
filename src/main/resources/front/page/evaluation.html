@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../styles/vant.min.css"/>
     <!-- 引入样式  -->
     <link rel="stylesheet" href="../styles/index.css"/>
-    <!--    &lt;!&ndash; 本页面内容的样式 &ndash;&gt;-->
+    <!--     本页面内容的样式 -->
     <!--    <link rel="stylesheet" href="../styles/address.css"/>-->
     <!--本页面内容的样式-->
     <link rel="stylesheet" href="../styles/evaluation.css"/>
@@ -89,8 +89,8 @@
                 history.go(-1);
             },
             async submitEvaluation() {
-                try {
 
+                try {
                     if (this.evaluationForm.score === 0) {
                         this.$message.error('请选择评分');
                         return
@@ -99,6 +99,7 @@
                         this.$message.error('请填写评价内容');
                         return
                     }
+                    this.evaluationForm.evaluatedObjectType = '外卖订单';
                     // 假设这里有一个 API 用于提交评价
                     const res = await axios.post('/evaluation', this.evaluationForm);
                     if (res.data.code === 1) {
@@ -108,6 +109,7 @@
                     } else {
                         this.$message.error(res.data.msg);
                     }
+
                 } catch (error) {
                     this.$message.error('提交评价时发生错误');
                 }
@@ -117,8 +119,11 @@
                 axios.get(`/evaluation/${this.evaluationForm.evaluatedObjectId}`)
                     .then(response => {
                         if (response.data.code === 1) {
-                            this.evaluationForm = response.data.data;
-                            if (response.data.data !== null || response.data.data !== "") {
+                            if (response.data.data && typeof response.data.data === 'object') {
+                                this.evaluationForm = {
+                                    ...this.evaluationForm,
+                                    ...response.data.data
+                                };
                                 this.submitFlag = false;
                             }
                         } else {

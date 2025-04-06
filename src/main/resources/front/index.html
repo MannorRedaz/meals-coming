@@ -51,7 +51,8 @@
             </div>
         </div>
         <div class="divDesc">
-            简介: 课业繁忙别愁，校园外卖依数据，告别传统餐饮束缚，便捷服务到身边。
+            简介: 课业繁忙别愁，校园外卖依数据，告别传统餐饮束缚，便捷服务到身边。<br>
+            <span @click="selectComment" style="color: #cf9236">点击此查看店铺评论</span>
         </div>
     </div>
     <div class="divBody">
@@ -364,6 +365,8 @@
                         // console.log('商家列表:', this.merchantList)
                         if (this.merchantList.length > 0) {
                             this.selectedMerchant = this.merchantList[0]
+                            this.merchantName = this.selectedMerchant.merchantName
+                            this.merchantId = this.selectedMerchant.id
                         }
                     } else {
                         this.$notify({type: 'warning', message: res.msg});
@@ -683,6 +686,14 @@
                 this.initData()
                 this.dishList = []
             },
+            selectComment() {
+                console.log("点击了查询评论的span")
+                const merchantId = this.merchantId
+                console.log(merchantId)
+                const params = new URLSearchParams();
+                params.append('merchantId', merchantId);
+                window.location.href = `/front/page/comment.html?${params}`;
+            }
         }
     })
 </script>

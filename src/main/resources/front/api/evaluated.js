@@ -5,3 +5,10 @@ function orderEvaluateApi(data) {
         data
     })
 }
+
+const getMerchantEvaluationApi = (id) => {
+    return $axios({
+        url: `/evaluation/list/${id}`,
+        method: 'get',
+    });
+}

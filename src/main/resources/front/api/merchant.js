@@ -13,3 +13,4 @@ const merchantListApi = (() => {
         method: 'get',
     });
 })
+

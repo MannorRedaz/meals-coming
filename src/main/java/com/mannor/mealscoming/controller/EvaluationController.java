@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.BaseContext;
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.entity.Evaluation;
+import com.mannor.mealscoming.entity.Orders;
 import com.mannor.mealscoming.service.EvaluationService;
+import com.mannor.mealscoming.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,6 +23,9 @@ public class EvaluationController {
 
     @Autowired
     private EvaluationService evaluationService;
+
+    @Autowired
+    private OrdersService ordersService;
 
     /**
      * 新增评价管理信息
@@ -76,6 +82,26 @@ public class EvaluationController {
     @GetMapping
     public R<List<Evaluation>> findAll() {
         return R.success(evaluationService.list());
+    }
+
+    /**
+     * 根据商家id查询评价管理信息
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("list/{id}")
+    public R<List<Evaluation>> findMerchantAll(@PathVariable Long id) {
+
+        List<Orders> list = ordersService.list(new LambdaQueryWrapper<Orders>().eq(Orders::getMerchantId, id));
+        ArrayList<Evaluation> evaluations = new ArrayList<>();
+        list.forEach(orders -> {
+            System.out.println(orders);
+            System.out.println(orders.getId());
+            Evaluation evaluation = evaluationService.getOne(new LambdaQueryWrapper<Evaluation>().eq(Evaluation::getEvaluatedObjectId, orders.getId()));
+            evaluations.add(evaluation);
+        });
+        return R.success(evaluations);
     }
 
     /**

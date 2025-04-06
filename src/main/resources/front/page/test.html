@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>优化商家切换弹出框</title>
+    <title>店铺评价</title>
     <!-- 引入 Vant 样式 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@3/lib/index.css">
     <style>
@@ -31,61 +31,29 @@
             padding: 16px 0;
         }
 
-        .timeStatus {
+        .evaluationInfo {
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: center;
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .dishList {
-            margin-bottom: 8px;
-        }
-
-        .dishList .item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             color: #333;
             font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .evaluationContent {
             margin-bottom: 4px;
         }
 
-        .result {
+        .evaluationTimeAndScore {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #333;
-            font-size: 14px;
-            margin-bottom: 16px;
+            width: 100%;
         }
 
-        .result .price {
-            color: #f60;
-            font-weight: bold;
-        }
-
-        .btn {
-            display: flex;
-            gap: 16px;
-        }
-
-        .btnAgain,
-        .btnEvaluate {
-            background-color: #f60;
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 4px;
-            text-align: center;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .btnAgain:hover,
-        .btnEvaluate:hover {
-            background-color: #e55;
+        .evaluatedObject {
+            color: #666;
         }
     </style>
 </head>
@@ -93,26 +61,26 @@
 <body>
 <!-- 假设这里有 Vue 实例挂载的元素 -->
 <div id="app">
-    <div class="divBody" v-if="orderList.length > 0">
-        <van-cell v-for="(order, index) in orderList" :key="index" class="item">
-            <div class="timeStatus">
-                <span>{{order.orderTime}}</span>
-                <span>{{getStatus(order.status)}}</span>
-            </div>
-            <div class="dishList">
-                <div v-for="(item, index) in order.orderDetails" :key="index" class="item">
-                    <span>{{item.name}}</span>
-                    <span>x{{item.number}}</span>
+    <div class="divBody" v-if="evaluations.length > 0">
+        <van-cell v-for="(evaluation, index) in evaluations" :key="index" class="item">
+            <div class="evaluationInfo">
+                <div class="evaluationContent">
+                    <span>评价内容：{{evaluation.evaluationContent}}</span>
+                </div>
+                <div class="evaluationTimeAndScore">
+                    <div class="evaluatedObject">
+                        <span>被评价对象：{{evaluation.evaluatedObjectType}}: {{evaluation.evaluatedObjectId}}</span>
+                    </div>
+                    <div>
+                        <span>评价时间：{{evaluation.evaluationTime}}</span>
+                        <span>评分：{{evaluation.score}}</span>
+                    </div>
                 </div>
             </div>
-            <div class="result">
-                <span>共{{order.sumNum}} 件商品,实付</span><span class="price">￥{{order.amount}}</span>
-            </div>
-            <div class="btn" v-if="order.status === 4">
-                <div class="btnAgain" @click="addOrderAgain(order)">再来一单</div>
-                <div class="btnEvaluate" @click="evaluateOrder(order)">评价</div>
-            </div>
         </van-cell>
+    </div>
+    <div v-else>
+        <van-empty description="暂无评价数据"></van-empty>
     </div>
 </div>
 <!-- 引入 Vue 和 Vant -->
@@ -123,41 +91,23 @@
         el: '#app',
         data() {
             return {
-                orderList: [
+                evaluations: [
                     {
-                        orderTime: '2024-10-01 12:00',
-                        status: 4,
-                        orderDetails: [
-                            { name: '宫保鸡丁', number: 1 },
-                            { name: '米饭', number: 2 }
-                        ],
-                        sumNum: 3,
-                        amount: 25
+                        evaluationContent: '味道很不错，分量也足',
+                        evaluatedObjectType: '店铺',
+                        evaluatedObjectId: '123456',
+                        evaluationTime: '2024-10-05 18:30',
+                        score: 4
+                    },
+                    {
+                        evaluationContent: '服务态度很好，推荐！',
+                        evaluatedObjectType: '店铺',
+                        evaluatedObjectId: '123456',
+                        evaluationTime: '2024-10-06 12:15',
+                        score: 5
                     }
                 ]
             };
-        },
-        methods: {
-            getStatus(status) {
-                switch (status) {
-                    case 1:
-                        return '待付款';
-                    case 2:
-                        return '已付款';
-                    case 3:
-                        return '正在派送';
-                    case 4:
-                        return '已完成';
-                    default:
-                        return '未知状态';
-                }
-            },
-            addOrderAgain(order) {
-                console.log('再来一单:', order);
-            },
-            evaluateOrder(order) {
-                console.log('评价订单:', order);
-            }
         }
     });
 </script>

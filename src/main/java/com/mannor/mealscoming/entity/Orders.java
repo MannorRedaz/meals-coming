@@ -15,6 +15,8 @@ public class Orders implements Serializable {
 
     private Long id;
 
+    private Long merchantId;
+
     //订单号
     private String number;
 
