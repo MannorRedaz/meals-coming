@@ -1,6 +1,6 @@
 // 查询评价列表接口（分页查询）
 const getEvaluationList = (pageNum, pageSize, evaluationContent, evaluatedObjectType) => {
-    return axios.get('/evaluation/page', {
+    return axios.get('/evaluation', {
         params: {
             pageNum,
             pageSize,

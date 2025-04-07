@@ -8,14 +8,15 @@ import com.mannor.mealscoming.entity.Complaint;
 import com.mannor.mealscoming.entity.Employee;
 import com.mannor.mealscoming.service.ComplaintService;
 import com.mannor.mealscoming.service.EmployeeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @RestController
 @RequestMapping("/complaint")
+@Slf4j
 public class ComplaintController {
 
     @Autowired
@@ -74,8 +75,26 @@ public class ComplaintController {
      * @return 投诉建议管理信息列表
      */
     @GetMapping
-    public R<List<Complaint>> findAll() {
-        return R.success(complaintService.list());
+    public R<Page<Complaint>> findAll(@RequestParam Integer pageNum,
+                                      @RequestParam Integer pageSize,
+                                      @RequestParam(required = false) String userId,
+                                      @RequestParam(required = false) String complaintType,
+                                      @RequestParam(required = false) String handlingStatus) {
+        if (pageNum <= 0 || pageSize <= 0) {
+            throw new IllegalArgumentException("页码和每页数量必须为正整数");
+        }
+        QueryWrapper<Complaint> queryWrapper = new QueryWrapper<>();
+        if (userId != null && !userId.isEmpty()) {
+            queryWrapper.eq("user_id", userId);
+        }
+        if (complaintType != null && !complaintType.isEmpty()) {
+            queryWrapper.eq("complaint_type", complaintType);
+        }
+        if (handlingStatus != null && !handlingStatus.isEmpty()) {
+            queryWrapper.eq("handling_status", handlingStatus);
+        }
+        queryWrapper.orderByDesc("id");
+        return R.success(complaintService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
     /**

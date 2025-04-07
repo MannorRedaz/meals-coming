@@ -187,9 +187,9 @@
                 getEvaluationList(this.page, this.pageSize, this.evaluationContent,this.evaluatedObjectType)
                     .then(response => {
                         let res = response.data
-                        console.log(response)
-                        console.log(res.code)
-                        console.log(res.data.records)
+                        // console.log(response)
+                        // console.log(res.code)
+                        // console.log(res.data.records)
 
                         if (res.code === 1) {
                             this.tableData = res.data.records;

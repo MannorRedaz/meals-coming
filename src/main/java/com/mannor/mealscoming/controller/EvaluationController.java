@@ -86,8 +86,19 @@ public class EvaluationController {
      * @return 评价管理信息列表
      */
     @GetMapping
-    public R<List<Evaluation>> findAll() {
-        return R.success(evaluationService.list());
+    public R<Page<Evaluation>> list(@RequestParam Integer pageNum,
+                                    @RequestParam Integer pageSize,
+                                    @RequestParam(required = false) String evaluationContent,
+                                    @RequestParam(required = false) String evaluatedObjectType, HttpServletRequest request) {
+        QueryWrapper<Evaluation> queryWrapper = new QueryWrapper<>();
+        if (evaluationContent != null && evaluationContent != "") {
+            queryWrapper.like("evaluation_content", evaluationContent);
+        }
+        if (evaluatedObjectType != null && evaluatedObjectType != "") {
+            queryWrapper.eq("evaluated_object_type", evaluatedObjectType);
+        }
+        queryWrapper.orderByDesc("id");
+        return R.success(evaluationService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
     /**

@@ -1,6 +1,6 @@
 // 查询投诉建议列表接口（分页查询）
 const getComplaintList = (pageNum, pageSize, userId, complaintType, handlingStatus) => {
-    return axios.get('/complaint/page', {
+    return axios.get('/complaint', {
         params: {
             pageNum,
             pageSize,
