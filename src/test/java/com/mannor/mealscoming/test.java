@@ -24,7 +24,7 @@ public class test {
     }
     @Test
     public void test1(){
-        System.out.println(new SnowflakeGenerator().next());
+        System.out.println("wejian.xlsx".endsWith(".xlsx"));
 
     }
 }
