@@ -17,7 +17,7 @@
 #### 技术选型
 
 关于本项目的技术选型, 我们将会从 用户层、网关层、应用层、数据层 这几个方面进行介绍，而对于我们服务端开发工程师来说，在项目开发过程中，我们主要关注应用层及数据层技术的应用。
-![输入图片说明](https://gitee.com/mannor/resouces/raw/master/PicGo/f68f3cf7_6526081.png "屏幕截图")
+![系统架构图](https://gitee.com/mannor/resouces1/raw/master/PicGo/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9B%BE.png)
 
  **（1）用户层** 
 
