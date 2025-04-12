@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/merchant")
@@ -86,7 +87,7 @@ public class MerchantController {
 
     @GetMapping("detail/{id}")
     public R<MerchantDto> getByIdDetail(@PathVariable Long id) {
-        Merchant merchant =  merchantService.getById(id);
+        Merchant merchant = merchantService.getById(id);
         MerchantDto merchantDto = new MerchantDto();
         merchantDto.setId(merchant.getId());
         merchantDto.setMerchantName(merchant.getMerchantName());
@@ -166,7 +167,16 @@ public class MerchantController {
             }
             flag = true;
         }
+
+
         if (!flag) {
+            MerchantAudit one = merchantAuditService.getOne(new LambdaQueryWrapper<MerchantAudit>().eq(MerchantAudit::getMerchantId, loggedMerchant.getId()));
+
+            if (!"已通过".equals(one.getAuditStatus())) {
+                return R.error("账号状态异常，请联系管理员修改");
+            }
+
+
             // 4. 密码比对，如果不一致则返回登录失败结果
             if (!password.equals(loggedMerchant.getPassword())) {
                 return R.error("登录失败！");
@@ -175,6 +185,11 @@ public class MerchantController {
             request.getSession().setAttribute("MerchantId", loggedMerchant.getId());
             return R.success(loggedMerchant);
         } else {
+            MerchantAudit one = merchantAuditService.getOne(new LambdaQueryWrapper<MerchantAudit>().eq(MerchantAudit::getMerchantId, emp.getMerchantId()));
+
+            if (!"已通过".equals(one.getAuditStatus())) {
+                return R.error("账号状态异常，请联系管理员修改");
+            }
             //  4. 密码比对，如果不一致则返回登录失败结果
             if (!emp.getPassword().equals(password)) {
                 return R.error("登录失败！");
