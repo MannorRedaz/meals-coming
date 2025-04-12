@@ -72,7 +72,13 @@
                 if (regex.test(this.form.phone)) {
                     this.msgFlag = false
                     //this.form.code = (Math.random()*1000000).toFixed(0)  //随机生成数
-                    sendMsgApi({phone: this.form.phone})
+                    sendMsgApi({phone: this.form.phone}).then(res => {
+                        if (res.code === 1) {
+                            this.$message.success({message: res.data});
+                        } else {
+                            this.$message.error({message: res.msg});
+                        }
+                    })
                 } else {
                     this.msgFlag = true
                 }

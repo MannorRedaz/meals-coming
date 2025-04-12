@@ -55,7 +55,7 @@ public class SetmealController {
     public R<Page> page(Integer page, Integer pageSize, String name, HttpServletRequest request) {
         log.info("套餐管理分页查询的参数：page:{},pageSize:{},name:{}", page, pageSize, name);
         //构造分页构造器
-        Page<Setmeal> pageInfo = new Page(page, pageSize);
+        Page<Setmeal> pageInfo = new Page<>(page, pageSize);
         Page<SetmealDto> dtoPage = new Page<>();
         // 构造商家查询条件
         Object merchantId = request.getSession().getAttribute("MerchantId");

@@ -1,30 +1,48 @@
 package com.mannor.mealscoming;
 
 import cn.hutool.core.lang.generator.SnowflakeGenerator;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.entity.MerchantDetails;
+import com.mannor.mealscoming.entity.User;
 import com.mannor.mealscoming.service.MerchantDetailsService;
+import com.mannor.mealscoming.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 @SpringBootTest
 
 
 public class test {
 
 
-    MerchantDetailsService merchantDetailsService;
+    @Autowired
+    private UserService userService;
+
+
     @Test
-    public void test(){
+    public void test() {
         String dateTimeStr = "2025-03-10T00:00:00";
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         System.out.println(LocalDateTime.parse(dateTimeStr, formatter));
 
     }
+
     @Test
-    public void test1(){
+    public void test1() {
         System.out.println("wejian.xlsx".endsWith(".xlsx"));
+
+    }
+
+
+    @Test
+    public void test2() {
+        Page<User> pageInfo = new Page<>(1, 10);
+        System.out.println(R.success(userService.page(pageInfo)));
 
     }
 }

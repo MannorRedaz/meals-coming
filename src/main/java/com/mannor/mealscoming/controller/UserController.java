@@ -1,5 +1,6 @@
 package com.mannor.mealscoming.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mannor.mealscoming.Utils.ValidateCodeUtils;
 import com.mannor.mealscoming.common.BaseContext;
@@ -43,6 +44,12 @@ public class UserController {
         //获取手机号
         String phone = user.getPhone();
         if (StringUtils.isNotEmpty(phone)) {
+            //获取用户名对应的手机号
+            User user1 = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getPhone, phone));
+            if (user1 != null && user1.getStatus() == 0) {
+                return R.error("你的账号已被锁住，请联系管理员解冻");
+            }
+
             //生成随机的6位验证码
             String code = ValidateCodeUtils.generateValidateCode(6).toString();
             log.info("code={}", code);
@@ -134,6 +141,18 @@ public class UserController {
     @PutMapping("/userInfo")
     public R<String> update(@RequestBody User user) {
         log.info("用户修改提交参数：{}", user);
-        return  userService.updateById(user)?R.success("提交成功"):R.error("提交未成功");
+        return userService.updateById(user) ? R.success("提交成功") : R.error("提交未成功");
     }
+
+    @GetMapping("/page")
+    public R<Page<User>> page(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String name) {
+        Page<User> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        if (name != null && !name.isEmpty()) {
+            queryWrapper.like(User::getName, name);
+        }
+        return R.success(userService.page(pageInfo, queryWrapper));
+    }
+
+
 }

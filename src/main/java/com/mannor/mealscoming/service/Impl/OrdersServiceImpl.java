@@ -132,11 +132,17 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         Object merchantId = request.getSession().getAttribute("MerchantId");
         if (merchantId == null) {
             merchantId = request.getSession().getAttribute("EmployeeId");
-            merchantId = employeeService.getOne(new LambdaQueryWrapper<Employee>().eq(Employee::getId, merchantId)).getMerchantId();
+
+            Employee emp = employeeService.getOne(new LambdaQueryWrapper<Employee>().eq(merchantId == null, Employee::getId, merchantId));
+            if (emp != null) {
+                merchantId = emp.getMerchantId();
+            }
         }
         // 创建查询条件对象。
         LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Orders::getMerchantId, merchantId);
+        if (merchantId != null)
+            queryWrapper.eq(Orders::getMerchantId, merchantId);
+
         queryWrapper.like(StringUtils.isNotEmpty(number), Orders::getNumber, number);
         if (beginTime != null) {
             queryWrapper.between(Orders::getOrderTime, beginTime, endTime);
