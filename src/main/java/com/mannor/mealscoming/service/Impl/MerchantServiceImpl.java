@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mannor.mealscoming.dto.MerchantDto;
 import com.mannor.mealscoming.entity.Merchant;
 import com.mannor.mealscoming.entity.MerchantAudit;
 import com.mannor.mealscoming.entity.MerchantDetails;
@@ -92,4 +93,23 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
     public Merchant getByAccountName(String accountName) {
         return merchantMapper.selectOne(new LambdaQueryWrapper<Merchant>().eq(Merchant::getUsername, accountName));
     }
+
+    @Override
+    public Boolean updateMerchantInfo(MerchantDto merchantDto) {
+        // 更新商家信息
+        Merchant merchant = new Merchant();
+        merchant.setId(merchantDto.getId());
+        merchant.setMerchantName(merchantDto.getMerchantName());
+        merchant.setUsername(merchantDto.getUsername());
+        merchant.setPassword(DigestUtils.md5DigestAsHex(merchantDto.getPassword().getBytes()));
+        merchant.setUpdateTime(LocalDateTime.now());
+        merchant.setUsername(merchantDto.getUsername());
+
+        // 更新商家详情
+        MerchantDetails merchantDetails = merchantDto.getMerchantDetails();
+
+        return this.updateById(merchant)&&merchantDetailsService.updateById(merchantDetails);
+    }
+
+
 }

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家详情</title>
+    <!--    <script src="https://cdn.tailwindcss.com"></script>-->
+    <!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+    <link rel="stylesheet" href="../../styles/common.css"/>
+    <link rel="stylesheet" href="../../styles/page.css"/>
+</head>
+
+<body class="bg-gray-100 font-sans">
+<div class="addBrand-container mx-auto max-w-2xl p-8 bg-white rounded-lg shadow-md mt-10"
+     id="merchant-audit-modify-app">
+    <div class="container">
+        <el-form ref="data" :model="data" :inline="false" label-width="180px" class="demo-ruleForm space-y-6">
+            <el-form-item label="商家名称:" prop="merchantName" class="flex items-center">
+                <el-input v-model="data.merchantName" class="border border-gray-300 rounded-md px-3 py-2 w-full"/>
+            </el-form-item>
+            <!--            <el-form-item label="创建时间:" prop="createTime" class="flex items-center">-->
+            <!--                <el-input v-model="data.createTime" class="border border-gray-300 rounded-md px-3 py-2 w-full" />-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="更新时间:" prop="updateTime" class="flex items-center">-->
+            <!--                <el-input v-model="data.updateTime" class="border border-gray-300 rounded-md px-3 py-2 w-full" />-->
+            <!--            </el-form-item>-->
+            <el-form-item label="用户名:" prop="username" class="flex items-center">
+                <el-input v-model="data.username" class="border border-gray-300 rounded-md px-3 py-2 w-full"/>
+            </el-form-item>
+            <el-form-item label="联系人姓名:" prop="merchantDetails.name" class="flex items-center">
+                <el-input v-model="data.merchantDetails.name"
+                          class="border border-gray-300 rounded-md px-3 py-2 w-full"/>
+            </el-form-item>
+            <el-form-item label="联系人电话:" prop="merchantDetails.phone" class="flex items-center">
+                <el-input v-model="data.merchantDetails.phone"
+                          class="border border-gray-300 rounded-md px-3 py-2 w-full"/>
+            </el-form-item>
+            <el-form-item label="联系人性别:" prop="merchantDetails.gender" class="flex items-center">
+                <el-radio-group v-model="data.merchantDetails.gender" class="flex space-x-4">
+                    <el-radio label="男" class="flex items-center">男</el-radio>
+                    <el-radio label="女" class="flex items-center">女</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="联系人身份证号:" prop="merchantDetails.idCard" class="flex items-center">
+                <el-input v-model="data.merchantDetails.idCard"
+                          class="border border-gray-300 rounded-md px-3 py-2 w-full"/>
+            </el-form-item>
+<!--            <el-form-item label="营业执照:" prop="merchantDetails.businessLicense" class="flex items-center">-->
+<!--                <el-input v-model="data.merchantDetails.businessLicense"-->
+<!--                          class="border border-gray-300 rounded-md px-3 py-2 w-full"/>-->
+<!--                <img :src="data.merchantDetails.businessLicense" alt="营业执照"-->
+<!--                     class="max-w-full h-auto border border-gray-300 rounded-md mt-2">-->
+<!--            </el-form-item>-->
+            <el-form-item label="营业执照:" prop="merchantDetails.businessLicense" class="uploadImg">
+                <el-upload class="avatar-uploader" action="/common/upload"
+                           :show-file-list="false" :on-success="handleAvatarSuccess" :on-change="onChange" ref="upload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar"
+                         style="width: 150px ;height: 150px"></img>
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+            <el-form-item label="商家地址:" prop="merchantDetails.address" class="flex items-center">
+                <el-input v-model="data.merchantDetails.address"
+                          class="border border-gray-300 rounded-md px-3 py-2 w-full"/>
+            </el-form-item>
+            <!--            <el-form-item label="审核状态:" prop="auditStatus" class="flex items-center">-->
+            <!--                <el-radio-group v-model="data.merchantAudit.auditStatus" class="flex space-x-4">-->
+            <!--                    <el-radio label="已通过" class="flex items-center">已通过</el-radio>-->
+            <!--                    <el-radio label="未通过" class="flex items-center">未通过</el-radio>-->
+            <!--                </el-radio-group>-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="审核意见:" prop="auditComment" class="flex items-center">-->
+            <!--                <el-input v-model="data.merchantAudit.auditComment" class="border border-gray-300 rounded-md px-3 py-2 w-full" />-->
+            <!--            </el-form-item>-->
+            <div class="subBox address flex justify-end space-x-4">
+                <el-form-item>
+                    <el-button @click="goBack()"
+                               class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-md">
+                        返回
+                    </el-button>
+                    <el-button type="primary" @click="submitForm"
+                               class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md">
+                        保存
+                    </el-button>
+                </el-form-item>
+            </div>
+        </el-form>
+    </div>
+</div>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/element-ui/index.js"></script>
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../api/merchant.js"></script>
+<script src="../../js/validate.js"></script>
+<script src="../../js/index.js"></script>
+<script>
+    new Vue({
+        el: '#merchant-audit-modify-app',
+        data() {
+            return {
+                id: '',
+                data: {
+                    merchantDetails: {},
+                    merchantAudit: {}
+                },
+                imageUrl: ""
+            };
+        },
+        computed: {},
+        created() {
+            const urlParams = new URLSearchParams(window.location.search);
+            this.id = urlParams.get('id');
+            this.init();
+        },
+        mounted() {
+        },
+        methods: {
+            async init() {
+                getMerchantDetail(this.id).then(res => {
+                    if (res.data.code === 1) {
+                        this.data = res.data.data;
+                        this.imageUrl = this.data.merchantDetails.businessLicense
+                    } else {
+                        this.$message.error(res.msg || '操作失败');
+                    }
+                });
+            },
+            goBack() {
+                window.parent.menuHandle({
+                    id: '1',
+                    name: '流水统计',
+                    url: 'page/statistic/manage.html',
+                }, false);
+            },
+            async submitForm() {
+                // const res = await updateMerchantInfo(this.id, this.data);
+
+                try {
+                    const res = await updateMerchantInfo(this.data);
+                    console.log(res);
+                    if (res.data) {
+                        this.$message.success('保存成功');
+                        // window.parent.menuHandle({
+                        //     id: '1',
+                        //     name: '流水统计',
+                        //     url: 'page/statistic/manage.html',
+                        // }, false);
+                    } else {
+                        this.$message.error(res.msg || '保存失败');
+                    }
+                } catch (error) {
+                    this.$message.error('请求出错，请稍后重试');
+                }
+            },
+            handleAvatarSuccess(response, file, fileList) {
+                // 拼接down接口预览
+                if (response.code === 0 && response.msg === '未登录') {
+                    window.top.location.href = '/backend/page/login/login.html'
+                } else {
+                    this.imageUrl = `/common/download?name=${response.data}`
+                    this.data.merchantDetails.businessLicense = `/common/download?name=`+response.data
+                }
+            },
+
+            onChange(file) {
+                if (file) {
+                    const suffix = file.name.split('.')[1]
+                    const size = file.size / 1024 / 1024 < 2
+                    if (['png', 'jpeg', 'jpg'].indexOf(suffix) < 0) {
+                        this.$message.error('上传图片只支持 png、jpeg、jpg 格式！')
+                        this.$refs.upload.clearFiles()
+                        return false
+                    }
+                    if (!size) {
+                        this.$message.error('上传文件大小不能超过 2MB!')
+                        return false
+                    }
+                    console.log("last:" + this.imageUrl)
+                    return file
+                }
+            }
+        }
+    });
+</script>
+</body>
+
+</html>

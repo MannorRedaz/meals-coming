@@ -81,8 +81,10 @@
               >
                     <span>{{headTitle}}</span>
                 </div>
-                <div class="right-menu">
-                    <div class="avatar-wrapper">{{ userInfo.username }}</div>
+                <div class="right-menu" title="修改信息列表" alt="修改信息列表">
+                    <div class="avatar-wrapper" @click="goToInfoPage" alt="修改信息列表">
+                        {{ userInfo.username }}
+                    </div>
                     <!-- <div class="logout" @click="logout">退出</div> -->
                     <img src="images/icons/btn_close@2x.png" class="outLogin" alt="退出" @click="logout"/>
                 </div>
@@ -217,6 +219,10 @@
                 this.timer = setTimeout(() => {
                     this.loading = false
                 }, 1000)
+            },
+            // 新增跳转方法
+            goToInfoPage() {
+                this.iframeUrl='page/info/info.html?id=1904531382730752000'
             }
         }
     })

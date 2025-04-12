@@ -74,6 +74,14 @@ public class MerchantController {
         return R.success(merchantService.updateById(merchant));
     }
 
+    @PutMapping("info")
+    public R<Boolean> putInfo(@RequestBody MerchantDto merchantDto) {
+        log.info("修改商家信息：{}", merchantDto);
+
+        return R.success( merchantService.updateMerchantInfo(merchantDto));
+    }
+
+
     /**
      * 根据主键查询单个商家信息
      *
@@ -96,8 +104,11 @@ public class MerchantController {
         merchantDto.setUsername(merchant.getUsername());
         merchantDto.setPassword(merchant.getPassword());
         MerchantDetails merchantDetails = merchantDetailsService.getOne(new LambdaQueryWrapper<MerchantDetails>().eq(MerchantDetails::getMerchantId, merchant.getId()));
+
         merchantDto.setMerchantDetails(merchantDetails);
-        merchantDto.setMerchantAudit(merchantAuditService.getOne(new LambdaQueryWrapper<MerchantAudit>().eq(MerchantAudit::getMerchantId, merchant.getId())));
+        MerchantAudit merchantAudit = merchantAuditService.getOne(new LambdaQueryWrapper<MerchantAudit>().eq(MerchantAudit::getMerchantId, merchant.getId()));
+        merchantDto.setMerchantAudit(merchantAudit);
+
         return R.success(merchantDto);
     }
 
