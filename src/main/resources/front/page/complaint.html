@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <title>我要投诉</title>
+    <link rel="icon" href="../images/favico.ico">
+    <!--不同屏幕尺寸根字体设置-->
+    <script src="../js/base.js"></script>
+    <!--element-ui的样式-->
+    <link rel="stylesheet" href="../../backend/plugins/element-ui/index.css"/>
+    <!--引入vant样式-->
+    <link rel="stylesheet" href="../styles/vant.min.css"/>
+    <!-- 引入样式  -->
+    <link rel="stylesheet" href="../styles/index.css"/>
+    <!--本页面内容的样式-->
+    <link rel="stylesheet" href="../styles/complaint.css"/>
+</head>
+<body>
+<div id="address" class="app">
+    <div class="divHead">
+        <div class="divTitle">
+            <i class="el-icon-arrow-left" @click="goBack"></i>投诉与反馈中心
+        </div>
+    </div>
+    <div class="divContent">
+        <div class="divItem" v-for="(item,index) in complaintList" :key="index">
+            <div class="divAddress">
+                <span :class="{spanCompany:item.handlingStatus === '待处理',spanHome:item.handlingStatus === '已处理',spanSchool:item.handlingStatus === '待审核',spanSchool:item.handlingStatus === '未处理'}">
+                    {{item.handlingStatus}}
+                </span>
+                {{item.complaintType}}
+            </div>
+            <div class="divUserPhone">
+                <span>{{item.complaintContent}}</span>
+            </div>
+            <div class="divSplit"></div>
+            <div class="divDefault">
+                <span v-if="item.handlingResult">   处理结果： {{item.handlingResult}}</span><br>
+                <span v-if="item.handlingTime" style="margin-top: 10px">   处理时间： {{item.handlingTime}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="divBottom" @click="toComplaintCreatePage">+ 发起投诉</div>
+</div>
+<!-- 开发环境版本,包含了有帮助的命令行警告 -->
+<script src="../../backend/plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../backend/plugins/element-ui/index.js"></script>
+<!-- 引入vant样式 -->
+<script src="../js/vant.min.js"></script>
+<script src="../api/complaint.js"></script>
+
+<!-- 引入axios -->
+<script src="../../backend/plugins/axios/axios.min.js"></script>
+<script src="../js/request.js"></script>
+<script>
+    new Vue({
+        el: "#address",
+        data() {
+            return {
+                complaintList: [
+                    {
+                        id: 234,
+                        complaintType: '服务问题',
+                        complaintContent: '菜品不新鲜',//姓名
+                        userId: 1,
+                        handlingStatus: '待处理',//姓名
+                        handlingResult: '已处理',//姓名
+                        handlingTime: '2021-09-09 09:09:09',//手机号
+                        complantObjectId: '123456',//是否是默认
+                    },
+                ],
+            }
+        },
+        computed: {},
+        created() {
+            this.initData()
+        },
+        mounted() {
+        },
+        methods: {
+            goBack() {
+                history.go(-1)
+            },
+            toComplaintCreatePage() {
+                window.requestAnimationFrame(() => {
+                    window.location.href = '/front/page/complaint-edit.html'
+                })
+            },
+            async initData() {
+                const res = await complaintListApi()
+                if (res.code === 1) {
+                    this.complaintList = res.data
+                    console.log(this.complaintList);
+                } else {
+                    this.$message.error(res.msg)
+                }
+            }
+
+        }
+    })
+</script>
+</body>
+</html>

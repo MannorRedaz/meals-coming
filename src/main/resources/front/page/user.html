@@ -49,6 +49,12 @@
                 <span style="font-size: large">历史订单</span>
                 <i class="el-icon-arrow-right"></i>
             </div>
+            <div class="divSplit"></div>
+            <div class="item" @click="toComplaintPage">
+                <img src="../images/complaint.png"/>
+                <span style="font-size: large">我要投诉</span>
+                <i class="el-icon-arrow-right"></i>
+            </div>
         </div>
         <div class="divOrders" v-if="order[0]">
             <div class="title">最新订单</div>
@@ -198,6 +204,12 @@
                 } else {
                     this.$notify({type: 'warning', message: res.msg});
                 }
+            },
+            async toComplaintPage() {
+                window.requestAnimationFrame(() => {
+                    window.location.href = '/front/page/complaint.html'
+                })
+
             },
             async toPageLogin() {
                 const res = await logoutApi()

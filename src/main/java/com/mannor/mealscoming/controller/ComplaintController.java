@@ -1,8 +1,10 @@
 package com.mannor.mealscoming.controller;
 
+import cn.hutool.core.lang.generator.SnowflakeGenerator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mannor.mealscoming.common.BaseContext;
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.entity.Complaint;
 import com.mannor.mealscoming.entity.Employee;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/complaint")
@@ -32,7 +35,10 @@ public class ComplaintController {
      * @return 新增结果
      */
     @PostMapping
-    public R<Boolean> save(@RequestBody Complaint complaint) {
+    public R<Boolean> save(@RequestBody Complaint complaint,HttpServletRequest request) {
+        complaint.setId(new SnowflakeGenerator().next());
+        complaint.setHandlingStatus("未处理");
+        complaint.setUserId(BaseContext.getCurrentId());
         return R.success(complaintService.save(complaint));
     }
 
@@ -144,5 +150,17 @@ public class ComplaintController {
         queryWrapper.orderByDesc("id");
         return R.success(complaintService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
+
+
+    @GetMapping("/list")
+    public R<List<Complaint>> list(HttpServletRequest request) {
+        // 构造商家查询条件
+        Object user = request.getSession().getAttribute("user");
+        LambdaQueryWrapper<Complaint> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(user == null, Complaint::getUserId, user);
+        queryWrapper.orderByDesc(Complaint::getHandlingTime);
+        return R.success(complaintService.list(queryWrapper));
+    }
+
 
 }
