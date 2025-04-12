@@ -172,7 +172,8 @@
                 headTitle: '流水统计',
                 goBackFlag: false,
                 loading: true,
-                timer: null
+                timer: null,
+                merchantId: '',
             }
         },
         computed: {},
@@ -180,6 +181,7 @@
             const userInfo = window.localStorage.getItem('userInfo')
             if (userInfo) {
                 this.userInfo = JSON.parse(userInfo)
+                console.log('userInfo', this.userInfo)
             }
             this.closeLoading()
         },

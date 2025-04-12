@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @Slf4j
 @RequestMapping("/statistic")
@@ -25,8 +27,13 @@ public class CountController {
      * @return
      */
     @GetMapping()
-    public R<DishSalesDTO> getDishSales() {
-        return R.success(orderDetailService.getDishSales());
+    public R<DishSalesDTO> getDishSales(HttpServletRequest request) {
+        return R.success(orderDetailService.getDishSales(request));
+    }
+
+    @GetMapping("all")
+    public R<DishSalesDTO> getAll() {
+        return R.success(orderDetailService.getAll());
     }
 
 }

@@ -1,6 +1,6 @@
 function getSalesVolume () {
     return $axios({
-        url: '/statistic',
+        url: '/statistic/all',
         method: 'get',
     })
 }
