@@ -5,70 +5,81 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商家审核与修改</title>
-    <!-- 引入样式 -->
+    <title>商家详情</title>
+<!--    <script src="https://cdn.tailwindcss.com"></script>-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">-->
     <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
     <link rel="stylesheet" href="../../styles/common.css" />
     <link rel="stylesheet" href="../../styles/page.css" />
 </head>
 
-<body>
-<div class="addBrand-container" id="merchant-audit-modify-app">
+<body class="bg-gray-100 font-sans">
+<div class="addBrand-container mx-auto max-w-2xl p-8 bg-white rounded-lg shadow-md mt-10" id="merchant-audit-modify-app">
     <div class="container">
-        <el-form ref="ruleForm" :model="ruleForm" :rules="rules" :inline="false" label-width="180px"
-                 class="demo-ruleForm">
-            <el-form-item label="商家名称:" prop="merchantName">
-                <el-input v-model="ruleForm.merchantName" placeholder="请输入商家名称" maxlength="20" />
+        <el-form ref="data" :model="data" :inline="false" label-width="180px" class="demo-ruleForm space-y-6">
+<!--            <el-form-item label="商家ID:" prop="id" class="flex items-center">-->
+<!--                <el-input v-model="data.id" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />-->
+<!--            </el-form-item>-->
+            <el-form-item label="商家名称:" prop="merchantName" class="flex items-center">
+                <el-input v-model="data.merchantName" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />
             </el-form-item>
-            <!--      <el-form-item-->
-            <!--              label="创建时间:"-->
-            <!--              prop="createTime"-->
-            <!--      >-->
-            <!--        <el-input-->
-            <!--                v-model="ruleForm.createTime"-->
-            <!--                placeholder="请输入创建时间"-->
-            <!--                maxlength="20"-->
-            <!--                disabled-->
-            <!--        />-->
-            <!--      </el-form-item>-->
-            <!--      <el-form-item-->
-            <!--              label="更新时间:"-->
-            <!--              prop="updateTime"-->
-            <!--      >-->
-            <!--        <el-input-->
-            <!--                v-model="ruleForm.updateTime"-->
-            <!--                placeholder="请输入更新时间"-->
-            <!--                maxlength="20"-->
-            <!--                disabled-->
-            <!--        />-->
-            <!--      </el-form-item>-->
-            <el-form-item label="审核状态:" prop="auditStatus">
-                <el-radio-group v-model="ruleForm.auditStatus">
-                    <el-radio label="已通过">已通过</el-radio>
-                    <el-radio label="未通过">未通过</el-radio>
+            <el-form-item label="创建时间:" prop="createTime" class="flex items-center">
+
+                <el-input v-model="data.createTime" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />
+            </el-form-item>
+            <el-form-item label="更新时间:" prop="updateTime" class="flex items-center">
+                <el-input v-model="data.updateTime" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />
+            </el-form-item>
+            <el-form-item label="用户名:" prop="username" class="flex items-center">
+                <el-input v-model="data.username" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />
+            </el-form-item>
+<!--            <el-form-item label="密码:" prop="password" class="flex items-center">-->
+<!--                <el-input v-model="data.password" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />-->
+<!--            </el-form-item>-->
+            <el-form-item label="联系人姓名:" prop="merchantDetails.name" class="flex items-center">
+                <el-input v-model="data.merchantDetails.name" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />
+            </el-form-item>
+            <el-form-item label="联系人电话:" prop="merchantDetails.phone" class="flex items-center">
+                <el-input v-model="data.merchantDetails.phone" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />
+            </el-form-item>
+            <el-form-item label="联系人性别:" prop="merchantDetails.gender" class="flex items-center">
+                <el-input v-model="data.merchantDetails.gender" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />
+            </el-form-item>
+            <el-form-item label="联系人身份证号:" prop="merchantDetails.idCard" class="flex items-center">
+                <el-input v-model="data.merchantDetails.idCard" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />
+            </el-form-item>
+            <el-form-item label="营业执照:" prop="merchantDetails.businessLicense" class="flex items-center">
+                <img :src="data.merchantDetails.businessLicense" alt="营业执照" class="max-w-full h-auto border border-gray-300 rounded-md">
+            </el-form-item>
+            <el-form-item label="商家地址:" prop="merchantDetails.address" class="flex items-center">
+                <el-input v-model="data.merchantDetails.address" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />
+            </el-form-item>
+            <el-form-item label="审核状态:" prop="auditStatus" class="flex items-center">
+                <el-radio-group v-model="data.merchantAudit.auditStatus" class="flex space-x-4">
+                    <el-radio label="已通过" class="flex items-center">
+                    </el-radio>
+                    <el-radio label="未通过" class="flex items-center">
+                    </el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="审核意见:" prop="auditComment">
-                <el-input v-model="ruleForm.auditComment" placeholder="请输入审核意见" maxlength="200" />
+            <el-form-item label="审核意见:" prop="auditComment" class="flex items-center">
+                <el-input v-model="data.merchantAudit.auditComment" readonly class="border border-gray-300 rounded-md px-3 py-2 w-full" />
             </el-form-item>
-            <div class="subBox address">
-                <el-form-item>
-                    <el-button @click="goBack()">
-                        取消
-                    </el-button>
-                    <el-button type="primary" @click="submitForm('ruleForm')">
-                        保存
-                    </el-button>
-                </el-form-item>
-            </div>
+<!--            <div class="subBox address flex justify-end space-x-4">-->
+<!--                <el-form-item>-->
+<!--                    <el-button @click="goBack()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-md">-->
+<!--                        取消-->
+<!--                    </el-button>-->
+<!--                    <el-button type="primary" @click="submitForm('')" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md">-->
+<!--                        保存-->
+<!--                    </el-button>-->
+<!--                </el-form-item>-->
+<!--            </div>-->
         </el-form>
     </div>
 </div>
-<!-- 开发环境版本，包含了有帮助的命令行警告 -->
 <script src="../../plugins/vue/vue.js"></script>
-<!-- 引入组件库 -->
 <script src="../../plugins/element-ui/index.js"></script>
-<!-- 引入axios -->
 <script src="../../plugins/axios/axios.min.js"></script>
 <script src="../../js/request.js"></script>
 <script src="../../api/merchant.js"></script>
@@ -80,115 +91,38 @@
         data() {
             return {
                 id: '',
-                actionType: '',
-                ruleForm: {
-                    merchantName: '',
-                    auditStatus: '已通过',
-                    auditComment: ''
+                data: {
+                    merchantDetails: {},
+                    merchantAudit: {}
                 }
-            }
+            };
         },
-        computed: {
-            rules() {
-                return {
-                    // 商家名称
-                    merchantName: [
-                        {
-                            required: true,
-                            validator: checkName,
-                            trigger: 'blur'
-                        }
-                    ],
-                    // 审核状态
-                    auditStatus: [
-                        {
-                            required: true,
-                            message: '请选择审核状态',
-                            trigger: 'change'
-                        }
-                    ],
-                    // 审核意见
-                    auditComment: [
-                        {
-                            required: true,
-                            message: '请输入审核意见',
-                            trigger: 'blur'
-                        }
-                    ]
-                }
-            }
-        },
+        computed: {},
         created() {
-            this.id = requestUrlParam('id')
-            this.actionType = this.id ? 'edit' : 'add'
-            if (this.id) {
-                this.init()
-            }
+            const urlParams = new URLSearchParams(window.location.search);
+            this.id = urlParams.get('id');
+            this.init();
         },
-        mounted() {
-        },
+        mounted() {},
         methods: {
             async init() {
-                getMerchantInfo(this.id).then(res => {
-                    console.error("1234")
+                getMerchantDetail(this.id).then(res => {
                     if (res.data.code === 1) {
-                        this.ruleForm = {
-                            merchantName: res.data.merchantName,
-                            auditStatus: res.data.merchantAudit ? res.data.merchantAudit.auditStatus : '未审核',
-                            auditComment: res.data.merchantAudit ? res.data.merchantAudit.auditComment : ''
-                        }
+                        this.data = res.data.data;
                     } else {
-                        this.$message.error(res.msg || '操作失败')
+                        this.$message.error(res.msg || '操作失败');
                     }
-                })
-            },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        const params = {
-                            id: this.id,
-                            merchantName: this.ruleForm.merchantName,
-                            auditStatus: this.ruleForm.auditStatus,
-                            auditComment: this.ruleForm.auditComment
-                        }
-                        if (this.actionType === 'add') {
-                            createMerchant(params).then(res => {
-                                if (res.code === 1) {
-                                    this.$message.success('商家添加成功！')
-                                    this.goBack()
-                                } else {
-                                    this.$message.error(res.msg || '操作失败')
-                                }
-                            }).catch(err => {
-                                this.$message.error('请求出错了：' + err)
-                            })
-                        } else {
-                            updateMerchant(params).then(res => {
-                                if (res.code === 1) {
-                                    this.$message.success('商家信息修改成功！')
-                                    this.goBack()
-                                } else {
-                                    this.$message.error(res.msg || '操作失败')
-                                }
-                            }).catch(err => {
-                                this.$message.error('请求出错了：' + err)
-                            })
-                        }
-                    } else {
-                        console.log('error submit!!')
-                        return false
-                    }
-                })
+                });
             },
             goBack() {
                 window.parent.menuHandle({
                     id: '2',
                     url: '/admin/page/merchant/list.html',
                     name: '商家管理'
-                }, false)
+                }, false);
             }
         }
-    })
+    });
 </script>
 </body>
 

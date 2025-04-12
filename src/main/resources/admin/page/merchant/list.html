@@ -78,7 +78,7 @@
             <el-table-column label="操作" width="160" align="center">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" class="blueBug"
-                               @click="addMerchantHandle(scope.row.id)">
+                               @click="addMerchantHandle(scope.row.id)"  v-if="scope.row.merchantAudit">
                         详情
                     </el-button>
                     <el-button type="text" size="small" class="delBut non">
@@ -151,7 +151,7 @@
                     auditStatus: this.auditStatus ? this.auditStatus : undefined,
                     auditComment: this.auditComment ? this.auditComment : undefined
                 }
-                console.log(params);
+                // console.log(params);
                 await getMerchantPage(params).then(res => {
                     if (res.code === 1) {
                         this.tableData = res.data || []
@@ -177,18 +177,11 @@
                 this.init();
             },
             // 添加
-            addMerchantHandle(st) {
-                if (st === 'add') {
+            addMerchantHandle(id) {
                     window.parent.menuHandle({
                         id: '2',
-                        url: '/admin/page/merchant/add.html',
-                        name: '添加商家'
-                    }, true)
-                } else {
-                    window.parent.menuHandle({
-                        id: '2',
-                        url: '/admin/page/merchant/add.html?id=' + st,
-                        name: '修改商家'
+                        url: '/admin/page/merchant/add.html?id=' + id,
+                        name: '商家详情'
                     }, true)
                 }
             },
@@ -226,7 +219,7 @@
                 this.page = val
                 this.init()
             }
-        }
+
     })
 </script>
 </body>

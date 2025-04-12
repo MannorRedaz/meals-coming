@@ -2,6 +2,7 @@ package com.mannor.mealscoming.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mannor.mealscoming.common.R;
+import com.mannor.mealscoming.dto.MerchantDto;
 import com.mannor.mealscoming.entity.Employee;
 import com.mannor.mealscoming.entity.Merchant;
 import com.mannor.mealscoming.entity.MerchantAudit;
@@ -81,6 +82,22 @@ public class MerchantController {
     @GetMapping("/{id}")
     public R<Merchant> getById(@PathVariable Long id) {
         return R.success(merchantService.getById(id));
+    }
+
+    @GetMapping("detail/{id}")
+    public R<MerchantDto> getByIdDetail(@PathVariable Long id) {
+        Merchant merchant =  merchantService.getById(id);
+        MerchantDto merchantDto = new MerchantDto();
+        merchantDto.setId(merchant.getId());
+        merchantDto.setMerchantName(merchant.getMerchantName());
+        merchantDto.setCreateTime(merchant.getCreateTime());
+        merchantDto.setUpdateTime(merchant.getUpdateTime());
+        merchantDto.setUsername(merchant.getUsername());
+        merchantDto.setPassword(merchant.getPassword());
+        MerchantDetails merchantDetails = merchantDetailsService.getOne(new LambdaQueryWrapper<MerchantDetails>().eq(MerchantDetails::getMerchantId, merchant.getId()));
+        merchantDto.setMerchantDetails(merchantDetails);
+        merchantDto.setMerchantAudit(merchantAuditService.getOne(new LambdaQueryWrapper<MerchantAudit>().eq(MerchantAudit::getMerchantId, merchant.getId())));
+        return R.success(merchantDto);
     }
 
     /**

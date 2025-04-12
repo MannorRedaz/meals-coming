@@ -20,5 +20,4 @@ public class Merchant implements Serializable {
     private LocalDateTime  updateTime;
     private String username;
     private String password;
-    private Integer status;
 }

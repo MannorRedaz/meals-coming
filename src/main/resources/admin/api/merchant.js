@@ -29,6 +29,12 @@ const getMerchantInfo = (id) => {
         method: 'get'
     }));
 };
+const getMerchantDetail = (id) => {
+    return (axios({
+        url: `/merchant/detail/${id}`,
+        method: 'get'
+    }));
+};
 
 
 // 新增商家
