@@ -1,5 +1,6 @@
 package com.mannor.mealscoming.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.R;
@@ -48,7 +49,7 @@ public class MerchantAuditController {
      */
     @PutMapping
     public R<String> update(@RequestBody CombinedMerchantAudit combinedMerchantAudit) {
-        QueryWrapper<MerchantAudit> getByMerchantId = new QueryWrapper<MerchantAudit>().eq("merchant_id", combinedMerchantAudit.getMerchantId());
+        LambdaQueryWrapper<MerchantAudit> getByMerchantId = new LambdaQueryWrapper<MerchantAudit>().eq(MerchantAudit::getMerchantId, combinedMerchantAudit.getMerchantId());
         MerchantAudit merchantAudit = merchantAuditService.getOne(getByMerchantId);
         if (merchantAudit == null) {
             return R.error("未找到该数据，请刷新重试");

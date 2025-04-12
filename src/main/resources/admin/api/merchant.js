@@ -62,14 +62,14 @@ const removeMerchant = (ids) => {
 
 
 // 审核商家
-const auditMerchant = (id, auditComment) => {
+const auditMerchant = (id, auditComment,statusValue) => {
     return (axios({
         url: `/merchantAudit`,
         method: 'put',
         data: {
             merchantId: id,
             auditComment: auditComment,
-            auditStatus: ' 已通过 '
+            auditStatus: statusValue
         }
     }))
 };

@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>商家管理</title>
     <!-- 引入样式 -->
-    <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
-    <link rel="stylesheet" href="../../styles/common.css" />
-    <link rel="stylesheet" href="../../styles/page.css" />
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+    <link rel="stylesheet" href="../../styles/common.css"/>
+    <link rel="stylesheet" href="../../styles/page.css"/>
     <style>
         #merchant-app.notAdmin::after {
-            border: 0!important;
+            border: 0 !important;
         }
     </style>
 </head>
@@ -53,6 +53,7 @@
                 <el-option label="已通过" value="已通过"></el-option>
                 <el-option label="未通过" value="未通过"></el-option>
                 <el-option label="待审核" value="待审核"></el-option>
+                <el-option label="已禁用" value="已禁用"></el-option>
             </el-select>
             <el-input v-model="auditComment" placeholder="请输入审核意见" style="width: 200px" clearable
                       @keyup.enter.native="handleQuery"></el-input>
@@ -65,7 +66,7 @@
             <el-table-column prop="updateTime" label="更新时间"></el-table-column>
             <el-table-column label="审核状态">
                 <template slot-scope="scope">
-                    {{ scope.row.merchantAudit? scope.row.merchantAudit.auditStatus : '待审核' }}
+                    {{ scope.row.merchantAudit ? scope.row.merchantAudit.auditStatus : '待审核' }}
                 </template>
             </el-table-column>
             <el-table-column label="审核意见">
@@ -80,9 +81,14 @@
                                @click="addMerchantHandle(scope.row.id)">
                         详情
                     </el-button>
-                    <el-button type="text" size="small" class="delBut non"
-                               @click="statusHandle(scope.row)">
-                        <span v-if="scope.row.merchantAudit && (!scope.row.merchantAudit.auditComment || scope.row.merchantAudit.auditStatus === '待审核')">审核</span>
+                    <el-button type="text" size="small" class="delBut non">
+                        <span v-if="scope.row.merchantAudit && ( scope.row.merchantAudit.auditStatus === '待审核')"
+                              @click="statusHandle(scope.row,'已通过')">审核</span>
+                        <span v-else-if="scope.row.merchantAudit && (scope.row.merchantAudit.auditStatus === '已通过')"
+                              @click="statusHandle(scope.row,'已禁用')">禁用</span>
+                        <span v-else-if="scope.row.merchantAudit && (scope.row.merchantAudit.auditStatus === '已禁用')"
+                              @click="statusHandle(scope.row,'已通过')">启用</span>
+
                     </el-button>
                 </template>
             </el-table-column>
@@ -128,7 +134,7 @@
         computed: {},
         created() {
             this.init()
-            this.user = JSON.parse(localStorage.getItem('userInfo')).username? JSON.parse(localStorage.getItem('userInfo')).username : '超级管理员'
+            this.user = JSON.parse(localStorage.getItem('userInfo')).username ? JSON.parse(localStorage.getItem('userInfo')).username : '超级管理员'
         },
         mounted() {
         },
@@ -137,13 +143,13 @@
                 const params = {
                     page: this.page,
                     pageSize: this.pageSize,
-                    merchantName: this.input? this.input : undefined,
-                    createTimeStart: this.createTimeRange[0]? this.createTimeRange[0] : undefined,
-                    createTimeEnd: this.createTimeRange[1]? this.createTimeRange[1] : undefined,
-                    updateTimeStart: this.updateTimeRange[0]? this.updateTimeRange[0] : undefined,
-                    updateTimeEnd: this.updateTimeRange[1]? this.updateTimeRange[1] : undefined,
-                    auditStatus: this.auditStatus? this.auditStatus : undefined,
-                    auditComment: this.auditComment? this.auditComment : undefined
+                    merchantName: this.input ? this.input : undefined,
+                    createTimeStart: this.createTimeRange[0] ? this.createTimeRange[0] : undefined,
+                    createTimeEnd: this.createTimeRange[1] ? this.createTimeRange[1] : undefined,
+                    updateTimeStart: this.updateTimeRange[0] ? this.updateTimeRange[0] : undefined,
+                    updateTimeEnd: this.updateTimeRange[1] ? this.updateTimeRange[1] : undefined,
+                    auditStatus: this.auditStatus ? this.auditStatus : undefined,
+                    auditComment: this.auditComment ? this.auditComment : undefined
                 }
                 console.log(params);
                 await getMerchantPage(params).then(res => {
@@ -187,17 +193,18 @@
                 }
             },
             // 审核操作
-            statusHandle(row) {
+            statusHandle(row, status) {
                 this.id = row.id
-                this.$prompt('请输入审核意见', '审核商家', {
+                this.$prompt('请输入操作原因', '商家状态处理', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                }).then(({ value }) => {
-                    auditMerchant(this.id, value).then(res => {
+                }).then(({value}) => {
+                    auditMerchant(this.id, value, status).then(res => {
                         if (res.code === 1) {
                             this.$message.success('审核操作成功！')
                             this.handleQuery()
                         }
+                        this.handleQuery()
 
                     }).catch(err => {
                         this.$message.error('请求出错了：' + err)
@@ -208,6 +215,7 @@
                         message: '取消审核操作'
                     });
                 });
+                this.init();
                 this.handleQuery()
             },
             handleSizeChange(val) {
