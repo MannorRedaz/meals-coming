@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>商家管理</title>
     <!-- 引入样式 -->
-    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
-    <link rel="stylesheet" href="../../styles/common.css"/>
-    <link rel="stylesheet" href="../../styles/page.css"/>
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css" />
+    <link rel="stylesheet" href="../../styles/common.css" />
+    <link rel="stylesheet" href="../../styles/page.css" />
     <style>
         #merchant-app.notAdmin::after {
             border: 0 !important;
@@ -26,30 +26,14 @@
                 <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer"
                    @click="handleQuery"></i>
             </el-input>
-            <el-date-picker
-                    v-model="createTimeRange"
-                    type="daterange"
-                    range-separator=""
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    style="width: 250px"
-                    @change="handleQuery"
-            ></el-date-picker>
-            <el-date-picker
-                    v-model="updateTimeRange"
-                    type="daterange"
-                    range-separator=""
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    style="width: 250px"
-                    @change="handleQuery"
-            ></el-date-picker>
-            <el-select
-                    v-model="auditStatus"
-                    placeholder="请选择审核状态"
-                    style="width: 150px"
-                    @change="handleQuery"
-            >
+            <el-date-picker v-model="createTimeRange" type="daterange" range-separator=""
+                            start-placeholder="开始日期" end-placeholder="结束日期" style="width: 250px" @change="handleQuery">
+            </el-date-picker>
+            <el-date-picker v-model="updateTimeRange" type="daterange" range-separator=""
+                            start-placeholder="开始日期" end-placeholder="结束日期" style="width: 250px" @change="handleQuery">
+            </el-date-picker>
+            <el-select v-model="auditStatus" placeholder="请选择审核状态" style="width: 150px"
+                       @change="handleQuery">
                 <el-option label="已通过" value="已通过"></el-option>
                 <el-option label="未通过" value="未通过"></el-option>
                 <el-option label="待审核" value="待审核"></el-option>
@@ -71,19 +55,18 @@
             </el-table-column>
             <el-table-column label="审核意见">
                 <template slot-scope="scope">
-                    {{ scope.row.merchantAudit || scope.row.merchantAudit === '' ? scope.row.merchantAudit.auditComment : '无'
-                    }}
+                    {{ scope.row.merchantAudit || scope.row.merchantAudit === '' ? scope.row.merchantAudit.auditComment : '无' }}
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="160" align="center">
                 <template slot-scope="scope">
-                    <el-button type="text" size="small" class="blueBug"
-                               @click="addMerchantHandle(scope.row.id)"  v-if="scope.row.merchantAudit">
+                    <el-button type="text" size="small" class="blueBug" @click="addMerchantHandle(scope.row.id)"
+                               v-if="scope.row.merchantAudit">
                         详情
                     </el-button>
                     <el-button type="text" size="small" class="delBut non">
-                        <span v-if="scope.row.merchantAudit && ( scope.row.merchantAudit.auditStatus === '待审核')"
-                              @click="statusHandle(scope.row,'已通过')">审核</span>
+                            <span v-if="scope.row.merchantAudit && ( scope.row.merchantAudit.auditStatus === '待审核')"
+                                  @click="statusHandle(scope.row,'已通过')">审核</span>
                         <span v-else-if="scope.row.merchantAudit && (scope.row.merchantAudit.auditStatus === '已通过')"
                               @click="statusHandle(scope.row,'已禁用')">禁用</span>
                         <span v-else-if="scope.row.merchantAudit && (scope.row.merchantAudit.auditStatus === '已禁用')"
@@ -93,16 +76,10 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination
-                class="pageList"
-                :page-sizes="[10, 20, 30, 40]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="counts"
-                :current-page.sync="page"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-        ></el-pagination>
+        <el-pagination class="pageList" :page-sizes="[10, 20, 30, 40]" :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper" :total="counts" :current-page.sync="page"
+                       @size-change="handleSizeChange" @current-change="handleCurrentChange">
+        </el-pagination>
     </div>
 </div>
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
@@ -139,8 +116,8 @@
         mounted() {
         },
         methods: {
-            async init() {
-                const params = {
+            getParams() {
+                return {
                     page: this.page,
                     pageSize: this.pageSize,
                     merchantName: this.input ? this.input : undefined,
@@ -151,16 +128,18 @@
                     auditStatus: this.auditStatus ? this.auditStatus : undefined,
                     auditComment: this.auditComment ? this.auditComment : undefined
                 }
-                // console.log(params);
+            },
+            async init() {
+                const params = this.getParams();
                 await getMerchantPage(params).then(res => {
                     if (res.code === 1) {
-                        this.tableData = res.data || []
-                        this.counts = res.data.length
-                        // console.log(res.data)
+                        this.tableData = res.data || [];
+                        this.counts = res.total; // 假设接口返回了总数信息
                     }
                 }).catch(err => {
-                    this.$message.error('请求出错了：' + err)
-                })
+                    this.$message.error('请求出错了：' + err);
+                    console.error('请求出错：', err); // 记录错误日志
+                });
             },
             handleQuery() {
                 this.page = 1;
@@ -178,48 +157,44 @@
             },
             // 添加
             addMerchantHandle(id) {
-                    window.parent.menuHandle({
-                        id: '2',
-                        url: '/admin/page/merchant/add.html?id=' + id,
-                        name: '商家详情'
-                    }, true)
-                }
+                window.parent.menuHandle({
+                    id: '2',
+                    url: '/admin/page/merchant/add.html?id=' + id,
+                    name: '商家详情'
+                }, true)
             },
             // 审核操作
             statusHandle(row, status) {
-                this.id = row.id
+                this.id = row.id;
                 this.$prompt('请输入操作原因', '商家状态处理', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                }).then(({value}) => {
+                }).then(({ value }) => {
                     auditMerchant(this.id, value, status).then(res => {
                         if (res.code === 1) {
-                            this.$message.success('审核操作成功！')
-                            this.handleQuery()
+                            this.$message.success('审核操作成功！');
+                            this.handleQuery();
                         }
-                        this.handleQuery()
-
                     }).catch(err => {
-                        this.$message.error('请求出错了：' + err)
-                    })
+                        this.$message.error('请求出错了：' + err);
+                        console.error('审核操作请求出错：', err); // 记录错误日志
+                    });
                 }).catch(() => {
                     this.$message({
                         type: 'info',
                         message: '取消审核操作'
                     });
                 });
-                this.init();
-                this.handleQuery()
             },
             handleSizeChange(val) {
-                this.pageSize = val
-                this.init()
+                this.pageSize = val;
+                this.init();
             },
             handleCurrentChange(val) {
-                this.page = val
-                this.init()
+                this.page = val;
+                this.init();
             }
-
+        }
     })
 </script>
 </body>

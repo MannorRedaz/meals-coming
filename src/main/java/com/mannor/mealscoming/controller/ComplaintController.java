@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -61,6 +62,7 @@ public class ComplaintController {
      */
     @PutMapping
     public R<Boolean> update(@RequestBody Complaint complaint) {
+        complaint.setHandlingTime(LocalDateTime.now());
         return R.success(complaintService.updateById(complaint));
     }
 

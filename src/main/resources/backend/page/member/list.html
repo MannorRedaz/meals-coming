@@ -83,10 +83,11 @@
                             size="small"
                             class="delBut non"
                             @click="statusHandle(scope.row)"
-                            v-if="user === 'admin'"
+                            v-if="del"
                     >
                         {{ scope.row.status == '1' ? '禁用' : '启用' }}
                     </el-button>
+
                 </template>
             </el-table-column>
         </el-table>
@@ -122,12 +123,26 @@
                 tableData: [],
                 id: '',
                 status: '',
+                del:false
             }
         },
         computed: {},
         created() {
             this.init()
             this.user = JSON.parse(localStorage.getItem('userInfo')).username
+            if(this.user === 'admin'|| this.user === 'username'
+                || this.user === 'username1'
+                || this.user === 'username2'
+                || this.user === 'username3'
+                || this.user === 'username4'
+                || this.user === 'username5'
+                || this.user === 'username6'
+                || this.user === 'username7'
+
+            ){
+                this.del = true
+            }
+
         },
         mounted() {
         },

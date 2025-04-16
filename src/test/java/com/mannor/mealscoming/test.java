@@ -41,8 +41,8 @@ public class test {
 
     @Test
     public void test2() {
-        Page<User> pageInfo = new Page<>(1, 10);
-        System.out.println(R.success(userService.page(pageInfo)));
+        System.out.println(new SnowflakeGenerator().next());
+        System.out.println(String.valueOf(new SnowflakeGenerator().next()).length());
 
     }
 }
