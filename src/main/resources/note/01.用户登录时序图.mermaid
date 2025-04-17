@@ -1,0 +1,58 @@
+sequenceDiagram
+    participant Frontend as 前端
+    participant Backend as 后端
+    participant MySQL as MySQL数据库
+    participant Redis as Redis缓存
+    participant SMS as 阿里云短信服务
+
+    Frontend->>Frontend: 填写手机号
+    Frontend->>Frontend: 非空和格式验证
+    Frontend->>Backend: 发起验证码请求
+    activate Backend
+    Backend->>Backend: 格式和非法字符校验
+    alt 校验未通过
+        Backend-->>Frontend: 返回“用户提交错误”
+    else 校验通过
+        Backend->>MySQL: 查询User表
+        activate MySQL
+        MySQL-->>Backend: 返回查询结果
+        deactivate MySQL
+        alt 账号被锁定
+            Backend-->>Frontend: 返回“你的账号已被锁住，请联系管理员解冻”
+        else 账号未锁定或不存在
+            Backend->>Backend: 生成验证码
+            Backend->>Redis: 保存验证码，设置5分钟过期
+            activate Redis
+            Redis-->>Backend: 保存成功
+            deactivate Redis
+            Backend->>SMS: 调用短信服务发送验证码
+            activate SMS
+            SMS-->>Backend: 发送成功
+            deactivate SMS
+            Backend-->>Frontend: 返回“验证码成功发送”
+        end
+    end
+    deactivate Backend
+
+    Frontend->>Frontend: 接收验证码并填入输入框
+    Frontend->>Backend: 点击登录，发送手机号和验证码
+    activate Backend
+    Backend->>Redis: 获取缓存的验证码
+    activate Redis
+    Redis-->>Backend: 返回验证码
+    deactivate Redis
+    alt 验证码比对成功
+        Backend->>MySQL: 查询用户基本信息
+        activate MySQL
+        MySQL-->>Backend: 返回用户信息
+        deactivate MySQL
+        Backend->>Redis: 保存用户信息
+        activate Redis
+        Redis-->>Backend: 保存成功
+        deactivate Redis
+        Backend-->>Frontend: 返回用户基本信息
+        Frontend->>Frontend: 保存用户信息到本地缓存
+    else 验证码比对失败
+        Backend-->>Frontend: 返回“验证码错误”
+    end
+    deactivate Backend

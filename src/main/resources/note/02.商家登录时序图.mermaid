@@ -1,0 +1,31 @@
+sequenceDiagram
+    participant Frontend as 前端
+    participant Backend as 后端
+    participant Database as 数据库
+
+    Frontend->>Frontend: 填入用户名和密码
+    Frontend->>Frontend: 格式非法校验
+    alt 校验未通过
+        Frontend->>Frontend: 提示格式错误提醒
+    else 校验通过
+        Frontend->>Backend: 调用 login() 发起 Axios 请求，携带用户名和密码
+        activate Backend
+        Backend->>Backend: 验证用户名和密码合规性
+        alt 不合规
+            Backend-->>Frontend: 返回“账号异常”
+            Frontend->>Frontend: 重新进入验证码请求和登录流程
+        else 合规
+            Backend->>Database: 调用 getUserByName() 查询商家和员工状态
+            activate Database
+            Database-->>Backend: 返回查询结果
+            deactivate Database
+            Backend->>Backend: 密码匹配
+            alt 匹配成功
+                Backend-->>Frontend: 返回登录成功消息和 token 信息
+                Frontend->>Frontend: 保存 token 到本地缓存
+            else 匹配失败或未查到数据
+                Backend-->>Frontend: 返回“账号不存在”
+            end
+        end
+        deactivate Backend
+    end
