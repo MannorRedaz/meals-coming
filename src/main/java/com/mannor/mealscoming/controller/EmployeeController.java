@@ -161,11 +161,11 @@ public class EmployeeController {
         //employee.setUpdateUser(empId);
 
         //只有管理员权限才能添加员工
-        Long userCurrentId = BaseContext.getCurrentId();
-        Employee empById = employeeService.getById(userCurrentId);
-        if (!"admin".equals(empById.getUsername()) && !empById.getUsername().equals(employee.getUsername())) {
-            return R.error("您不能修改管理员或其他员工的信息！");
-        }
+//        Long userCurrentId = BaseContext.getCurrentId();
+//        Employee empById = employeeService.getById(userCurrentId);
+//        if (!"admin".equals(empById.getUsername()) && !empById.getUsername().equals(employee.getUsername())) {
+//            return R.error("您不能修改管理员或其他员工的信息！");
+//        }
         employeeService.updateById(employee);
         return R.success("员工状态修改成功");
     }
