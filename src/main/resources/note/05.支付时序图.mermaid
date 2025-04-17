@@ -1,0 +1,39 @@
+sequenceDiagram
+    participant User as 用户
+    participant Frontend as 前端
+    participant Backend as 后端
+    participant Database as 数据库
+    participant Alipay as 支付宝
+
+    User->>Frontend: 点击“去支付”
+    Frontend->>Backend: 调用 addOrderApi() 生成订单
+    alt 订单生成失败
+        Backend->>Frontend: 返回失败信息
+        Frontend->>Frontend: 弹出警告通知
+    else 订单生成成功
+        Frontend->>Backend: 根据支付方式（如支付宝）调用对应接口（alipayApi）
+        Backend->>Backend: AliPayController.pay()
+        Backend->>Database: 查询最新订单参数
+        Database-->>Backend: 返回订单参数
+        Backend->>Backend: AliPayUtils.pay()
+        Backend->>Alipay: 发起支付宝支付请求
+        Alipay-->>Backend: 返回支付页面响应
+        Backend->>Frontend: 返回支付页面响应
+        User->>Frontend: 进行支付操作
+        Frontend->>Frontend: 调用支付后回调函数
+        loop 查询支付状态
+            Frontend->>Backend: 调用 alipayQueryApi 接口
+            Backend->>Alipay: 查询支付状态
+            Alipay-->>Backend: 返回支付状态
+            Backend-->>Frontend: 返回支付状态
+            alt 支付成功
+                Frontend->>Backend: 设置支付状态为成功
+                Backend->>Database: 更新支付状态
+                Database-->>Backend: 返回更新结果
+                Frontend->>Frontend: 弹出成功通知
+                Frontend->>Frontend: 调用 paySuccess 方法跳转到支付成功页面
+            else 支付未成功
+                Note over Frontend: 继续循环查询
+            end
+        end
+    end

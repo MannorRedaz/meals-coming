@@ -1,0 +1,28 @@
+sequenceDiagram
+    participant User as 用户
+    participant Frontend as 前端
+    participant Backend as 后端
+    participant Database as 数据库
+
+    User->>Frontend: 进入订单页面
+    Frontend->>Backend: 发起 Axios 请求获取用户地址信息
+    Backend->>Database: 查询用户地址信息
+    Database-->>Backend: 返回地址信息
+    Backend->>Frontend: 返回用户地址信息
+    Frontend->>Frontend: 展示地址信息
+
+    User->>Frontend: 点击新增收货地址
+    Frontend->>Frontend: 切换到地址新增页面
+    User->>Frontend: 填写联系人、性别、手机号、收货地址等信息
+    User->>Frontend: 点击保存
+    Frontend->>Frontend: 对输入框内容进行非空校验
+    alt 校验通过
+        Frontend->>Backend: 发起 Axios 请求保存地址信息
+        Backend->>Backend: AddressController.addAddress()
+        Backend->>Database: 持久化地址信息
+        Database-->>Backend: 返回保存结果
+        Backend->>Frontend: 返回保存成功信息
+        Frontend->>Frontend: 提示保存成功，更新地址列表
+    else 校验不通过
+        Frontend->>Frontend: 提示输入信息不能为空
+    end

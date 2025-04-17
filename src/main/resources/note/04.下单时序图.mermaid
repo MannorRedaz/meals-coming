@@ -1,0 +1,52 @@
+sequenceDiagram
+    participant User as 用户
+    participant Frontend as 前端
+    participant Backend as 后端
+    participant Database as 数据库
+
+    User->>Frontend: 登录系统
+    User->>Frontend: 查看菜品/套餐信息
+    User->>Frontend: 选择菜品/套餐并加入购物车
+    Frontend->>Backend: 发起加入购物车 Axios 请求
+    Backend->>Backend: 通过 LoginCheckFilter 校验登录状态
+    alt 未通过校验
+        Backend->>Frontend: 返回 "NOT_LOGIN"
+        Frontend->>Frontend: 检测到未登录信息
+        Frontend->>Frontend: 跳转到 login.html 并清除缓存
+    else 通过校验
+        Backend->>Backend: 调用 addShoppingCart() 方法
+        Backend->>Database: 更新购物车数据
+        Database-->>Backend: 返回更新结果
+        Backend->>Frontend: 返回添加的菜品信息
+        Frontend->>Frontend: 在购物车显示份数、金额等信息
+    end
+
+    User->>Frontend: 点击“去结算”
+    Frontend->>Backend: 发起进入订单结算页面请求
+    Backend->>Backend: 通过 LoginCheckFilter 校验登录状态
+    alt 未通过校验
+        Backend->>Frontend: 返回 "NOT_LOGIN"
+        Frontend->>Frontend: 检测到未登录信息
+        Frontend->>Frontend: 跳转到 login.html 并清除缓存
+    else 通过校验
+        Backend->>Database: 查询默认地址信息
+        Database-->>Backend: 返回默认地址信息
+        alt 存在默认地址
+            Backend->>Frontend: 返回默认地址信息
+            Frontend->>Frontend: 在订单页面显示地址信息
+        else 不存在默认地址
+            Frontend->>Frontend: 触发 addAddress() 方法
+            User->>Frontend: 进入地址管理页面添加地址并设置默认
+            Frontend->>Backend: 提交新地址信息
+            Backend->>Database: 更新地址信息并设置默认
+            Database-->>Backend: 返回更新结果
+            Backend->>Frontend: 返回更新成功信息
+        end
+        User->>Frontend: 填写订单信息（预计送达时间、备注等）
+        User->>Frontend: 选择支付方式（微信/支付宝）
+        User->>Frontend: 点击“去支付”
+        Frontend->>Backend: 发起支付请求
+        Backend->>Backend: 处理支付请求
+        Backend->>Backend: 与支付平台交互
+        Backend-->>Frontend: 返回支付结果
+    end
