@@ -1,0 +1,55 @@
+<mxfile host="Electron" modified="2024-12-29T06:35:30.581Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.0.4 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="FTFdbQSoxBjgAQFN8XIs" version="24.0.4" type="device">
+  <diagram name="第 1 页" id="yTWe7KarX5mfNKedWjW0">
+    <mxGraphModel dx="724" dy="428" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="EwQUriPX27f7eEojrEHa-11" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="EwQUriPX27f7eEojrEHa-1" target="EwQUriPX27f7eEojrEHa-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-20" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;endArrow=none;endFill=0;" edge="1" parent="1" source="EwQUriPX27f7eEojrEHa-1" target="EwQUriPX27f7eEojrEHa-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-21" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0.1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=1;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="EwQUriPX27f7eEojrEHa-1" target="EwQUriPX27f7eEojrEHa-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-22" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="EwQUriPX27f7eEojrEHa-1" target="EwQUriPX27f7eEojrEHa-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-23" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="EwQUriPX27f7eEojrEHa-1" target="EwQUriPX27f7eEojrEHa-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-24" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="EwQUriPX27f7eEojrEHa-1" target="EwQUriPX27f7eEojrEHa-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-1" value="平台管理员用例图" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="395" y="525" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-10" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;商家管理" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="160" y="510" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-12" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;商家审核" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="170" y="420" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-13" value="&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;用户管理&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="250" y="360" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-14" value="&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;订单管理&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="364" y="340" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-15" value="&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;投诉建议管理&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="490" y="370" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-16" value="&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;评价管理&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="550" y="440" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-17" value="&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;服务数据分析统计分析&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="570" y="520" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="EwQUriPX27f7eEojrEHa-19" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.768;entryY=0.987;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" edge="1" parent="1" source="EwQUriPX27f7eEojrEHa-1" target="EwQUriPX27f7eEojrEHa-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
