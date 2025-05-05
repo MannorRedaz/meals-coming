@@ -41,8 +41,9 @@ public class test {
 
     @Test
     public void test2() {
-        System.out.println(new SnowflakeGenerator().next());
-        System.out.println(String.valueOf(new SnowflakeGenerator().next()).length());
+//        System.out.println(new SnowflakeGenerator().next());
+//        System.out.println(String.valueOf(new SnowflakeGenerator().next()).length());
+        System.out.println(Integer.parseInt("123"));
 
     }
 }
