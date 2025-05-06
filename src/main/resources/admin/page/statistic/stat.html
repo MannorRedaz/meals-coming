@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流水统计</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+    <link rel="stylesheet" href="../../styles/common.css"/>
+    <link rel="stylesheet" href="../../styles/page.css"/>
+    <style>
+        #merchant-app.notAdmin::after {
+            border: 0 !important;
+        }
+
+        .main {
+            width: 1000px;
+            height: 400px;
+        }
+
+        .chart-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .data-info {
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="dashboard-container" id="merchant-app">
+    <div class="container">
+        <div class="tableBar" style="margin: 10px 120px">
+            <el-input v-model="input" placeholder="请输入商家名称" style="width: 250px;display: none" clearable
+                      @keyup.enter.native="handleQuery">
+                <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer"
+                   @click="handleQuery"></i>
+            </el-input>
+            <el-date-picker v-model="createTimeRange" type="daterange" range-separator=""
+                            start-placeholder="开始日期" end-placeholder="结束日期" style="width: 250px"
+                            @change="handleQuery">
+            </el-date-picker>
+            <el-select v-model="choose" placeholder="请选择店商家" style="width: 150px"
+                       @change="handleQuery">
+                <el-option v-for="(item, index) in merchantList" :key="index" :label="item.merchantName"
+                           :value="item.id"></el-option>
+            </el-select>
+            <el-button type="primary" @click="resetQuery">重置</el-button>
+            <el-button type="primary" @click="handleQuery">搜索</el-button>
+        </div>
+        <div class="chart-container">
+            <div id="main1" class="main"></div>
+            <div class="data-info">
+                <h3>订单量</h3>
+                <p>{{ orderCount ? orderCount : 0 }}</p>
+            </div>
+        </div>
+        <div class="chart-container">
+            <div id="main2" class="main"></div>
+            <div class="data-info">
+                <h3>店铺收入</h3>
+                <p>{{ storeIncome ? storeIncome : 0 }} 元</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../api/statistic.js"></script>
+<!-- 引入刚刚下载的 ECharts 文件 -->
+<script src="../../plugins/Echarts/echarts.min.js"></script>
+<!-- 引入商家api -->
+<script src="../../api/merchant.js"></script>
+<script>
+    new Vue({
+        el: '#merchant-app',
+        data() {
+            return {
+                salesParams: {},
+                orderCount: 12,
+                storeIncome: 12,
+                createTimeRange: [],
+                input: '',
+                choose: "",
+                merchantList: []
+            }
+        },
+        created() {
+
+            this.init();
+            this.getMerchantList();
+        },
+        mounted() {
+            this.init();
+        },
+        methods: {
+            getParams() {
+                return {
+
+                    createTimeStart: this.createTimeRange ? this.createTimeRange[0] : undefined,
+                    createTimeEnd: this.createTimeRange ? this.createTimeRange[1] : undefined,
+                    choose: this.choose ? this.choose : undefined
+                }
+            },
+            async init() {
+                await this.getSalesData();
+                const params = this.getParams();
+                console.log(params)
+            },
+            handleQuery() {
+                this.init();
+            },
+            // 重置查询条件
+            resetQuery() {
+                this.input = '';
+                this.createTimeRange = [];
+                this.choose = '';
+                this.init();
+            },
+            async getSalesData() {
+                const res = await getSalesVolume(this.getParams());
+                this.$nextTick(() => {
+                    this.renderChart();
+                });
+
+                if (res.code === 1) {
+                    this.salesParams = res.data;
+                    this.setSalesInfo();
+                    this.orderCount = res.data.orderCount;
+                    const storeIncome = res.data.sevenSalesMoney
+                    // console.log(typeof storeIncome)
+                    this.storeIncome = storeIncome + ".00";
+
+                } else {
+                    this.$message.error("获取销售数据失败: " + res.message);
+                }
+                try {
+
+
+                } catch (error) {
+                    this.$message.error("获取销售数据的时候发生了错误: " + error);
+                }
+            },
+            renderChart() {
+                const mainDiv = document.getElementById("main1");
+                const myChart = echarts.init(mainDiv);
+                const categories = Object.keys(this.salesParams.category);
+                const sales = Object.values(this.salesParams.category);
+                const option = {
+                    title: {
+                        text: "各菜品销量柱状图"
+                    },
+                    tooltip: {},
+                    legend: {
+                        data: ["销量"]
+                    },
+                    xAxis: {
+                        data: categories
+                    },
+                    yAxis: {},
+                    series: [
+                        {
+                            name: "销量",
+                            type: "bar",
+                            data: sales
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+
+                //近七天销售量折线图：
+                const chartDom = document.getElementById('main2');
+                const myChart2 = echarts.init(chartDom);
+                const sevenSalesNum = Object.values(this.salesParams.sevenSalesNum);
+                const option2 = {
+                    title: {
+                        text: "近七天销售数据"
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: ['近7天', '近6天', '近5天', '近4天', '近3天', '近2天', '近1天']
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            data: sevenSalesNum,
+                            type: 'line'
+                        }
+                    ]
+                };
+                option2 && myChart2.setOption(option2);
+            },
+            setSalesInfo() {
+                // 计算订单量
+                this.orderCount = this.salesParams.orderCount;
+
+                // 计算店铺收入
+                this.storeIncome = this.salesParams.storeIncome;
+            },
+            async getMerchantList() {
+                await merchantListApi().then(res => {
+                    if (res.code === 1) {
+                        this.merchantList = res.data;
+                    }
+                }).catch(err => {
+                    this.$message.error('请求出错了：' + err);
+                    console.error('获取商户列表请求出错：', err);
+                });
+            }
+        }
+    })
+</script>
+</body>
+
+</html>

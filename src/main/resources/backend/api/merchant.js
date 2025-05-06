@@ -89,3 +89,11 @@ const getMerchantAudit = (merchantId) => {
         params: {merchantId: merchantId}
     });
 };
+
+// 查询商家列表
+const merchantListApi = (() => {
+    return $axios({
+        url: '/merchant/list',
+        method: 'get',
+    });
+});

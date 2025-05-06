@@ -1,6 +1,6 @@
 // 查询商家分页列表
 const getMerchantPage = (params) => {
-    const newParams = { ...params };
+    const newParams = {...params};
     // 序列化日期对象
     if (newParams.createTimeStart) {
         newParams.createTimeStart = newParams.createTimeStart.toISOString();
@@ -68,7 +68,7 @@ const removeMerchant = (ids) => {
 
 
 // 审核商家
-const auditMerchant = (id, auditComment,statusValue) => {
+const auditMerchant = (id, auditComment, statusValue) => {
     return (axios({
         url: `/merchantAudit`,
         method: 'put',
@@ -89,3 +89,11 @@ const getMerchantAudit = (merchantId) => {
         params: {merchantId: merchantId}
     });
 };
+
+// 查询商家列表
+const merchantListApi = (() => {
+    return $axios({
+        url: '/merchant/list',
+        method: 'get',
+    });
+});
