@@ -75,5 +75,19 @@ public class OrdersController {
         return R.success("派送完成");
     }
 
+    /**
+     * 更新订单状态
+     *
+     * @param orders
+     * @return
+     */
+    @PostMapping("/updateStatus")
+    public R<String> updateStatus(@RequestBody Orders orders) {
+        log.info("参数：{}", orders);
+        orders.setStatus(3);
+        ordersService.updateById(orders);
+        return R.success("更新完成");
+    }
+
 
 }

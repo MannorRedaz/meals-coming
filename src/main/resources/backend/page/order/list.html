@@ -99,7 +99,7 @@
                         派送
                     </el-button>
                     <el-divider v-if="row.status === 3" direction="vertical"></el-divider>
-                    <el-button v-if="row.status === 3" type="text" @click="cancelOrDeliveryOrComplete(4, row.id)"
+                    <el-button v-if="row.status === 3" style="display: none" type="text" @click="cancelOrDeliveryOrComplete(4, row.id)"
                                class="blueBug">
                         完成
                     </el-button>

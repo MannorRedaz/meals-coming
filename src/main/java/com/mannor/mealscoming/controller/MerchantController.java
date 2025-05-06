@@ -78,6 +78,7 @@ public class MerchantController {
     public R<Boolean> putInfo(@RequestBody MerchantDto merchantDto) {
         log.info("修改商家信息：{}", merchantDto);
 
+
         return R.success( merchantService.updateMerchantInfo(merchantDto));
     }
 
@@ -190,7 +191,7 @@ public class MerchantController {
 
             // 4. 密码比对，如果不一致则返回登录失败结果
             if (!password.equals(loggedMerchant.getPassword())) {
-                return R.error("登录失败！");
+                return R.error("密码错误，登录失败！");
             }
             // 6. 登录成功，将商家/员工`id`存入`Session`并返回登录成功结果
             request.getSession().setAttribute("MerchantId", loggedMerchant.getId());

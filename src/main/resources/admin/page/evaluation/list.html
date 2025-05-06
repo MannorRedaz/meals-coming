@@ -86,9 +86,20 @@
         </div>
         <el-table :data="tableData" stripe class="tableBox">
             <el-table-column prop="evaluationContent" label="评价内容" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="userId" label="用户ID" min-width="80"></el-table-column>
-            <el-table-column prop="evaluatedObjectId" label="被评价对象ID" min-width="80"></el-table-column>
+<!--            <el-table-column prop="userId" label="用户ID" min-width="80"></el-table-column>-->
+<!--            <el-table-column prop="evaluatedObjectId" label="被评价对象ID" min-width="80"></el-table-column>-->
+            <el-table-column prop="user" label="用户名" min-width="80">
+                <template slot-scope="{ row }">
+                    <span>{{ row.user?row.user.name:'--' }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="merchant" label="商家名称" min-width="80">
+                <template slot-scope="{ row }">
+                    <span>{{ row.merchant?row.merchant.merchantName:'--' }}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="evaluatedObjectType" label="被评价对象类型" min-width="120"></el-table-column>
+
             <el-table-column prop="evaluationTime" label="评价时间" min-width="160"></el-table-column>
             <el-table-column prop="score" label="评分" min-width="60"></el-table-column>
             <el-table-column prop="btn" label="操作">

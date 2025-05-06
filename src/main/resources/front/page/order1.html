@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <title>菩提阁</title>
+    <link rel="icon" href="../images/favico.ico">
+    <!--不同屏幕尺寸根字体设置-->
+    <script src="../js/base.js"></script>
+    <!--element-ui的样式-->
+    <link rel="stylesheet" href="../../backend/plugins/element-ui/index.css"/>
+    <!--引入vant样式-->
+    <link rel="stylesheet" href="../styles/vant.min.css"/>
+    <!-- 引入样式  -->
+    <link rel="stylesheet" href="../styles/index.css"/>
+    <!--本页面内容的样式-->
+    <link rel="stylesheet" href="../styles/address.css"/>
+
+    <link rel="stylesheet" href="../styles/order.css">
+    <style>
+        .btnSubmit {
+            width: 78rem;
+            height: 24rem;
+            margin: 0rem -10rem 0 10rem;
+            border-radius: 20px;
+            border: 0;
+
+            font-size: 15rem;
+            font-family: PingFangSC, PingFangSC-Regular;
+            font-weight: 500;
+            text-align: center;
+
+            background-color: #ffc200;
+        }
+    </style>
+</head>
+<body>
+<div id="address" class="app">
+    <div class="divHead">
+        <div class="divTitle">
+            <i class="el-icon-arrow-left" @click="goBack"></i>历史订单
+        </div>
+    </div>
+    <div class="divContent">
+        <!--        <div class="divItem" v-for="(item,index) in addressList" :key="index" @click.capture="itemClick(item)">-->
+        <!--            <div class="divAddress">-->
+        <!--                <span :class="{spanCompany:item.label === '公司',spanHome:item.label === '家',spanSchool:item.label === '学校'}">{{item.label}}</span>-->
+        <!--                {{item.detail}}-->
+        <!--            </div>-->
+        <!--            <div class="divUserPhone">-->
+        <!--                <span>{{item.consignee}}</span>-->
+        <!--                <span>{{item.sex === '0' ? '女士' : '先生'}}</span>-->
+        <!--                <span>{{item.phone}}</span>-->
+        <!--            </div>-->
+        <!--            <img src="../images/edit.png" @click.stop.prevent="toAddressEditPage(item)"/>-->
+        <!--            <div class="divSplit"></div>-->
+        <!--            <div class="divDefault">-->
+        <!--                <img src="../images/checked_true.png" v-if="item.isDefault === 1">-->
+        <!--                <img src="../images/checked_false.png" @click.stop.prevent="setDefaultAddress(item)" v-else>设为默认地址-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <div class="divItem" v-for="(order,index) in orderList" :key="index" @click.capture="itemClick(item)"
+             style="margin-right: 10px; padding-right:30px;"
+        >
+
+            <div class="timeStatus">
+                <span>{{order.orderTime}}</span>
+                <span>{{getStatus(order.status)}}</span>
+            </div>
+            <div class="dishList">
+                <div v-for="(item, index) in order.orderDetails" :key="index" class="item">
+                    <span>{{item.name}}</span>
+                    <span>x{{item.number}}</span>
+                </div>
+            </div>
+            <div class="result">
+                <span>共{{order.sumNum}} 件商品,实付</span><span class="price">￥{{order.amount}}</span>
+                <span>
+                    <button class="btnSubmit" v-if="order.status===4"
+                            @click="showEvaluationPopup(order)">查看评价</button>
+                    <button class="btnSubmit" v-else-if="order.status===3"
+                            @click="showEvaluationPopup(order)">评价</button>
+                    <button class="btnSubmit" v-else-if="order.status===2"
+                            @click="updateOrderStatus(order)">已完成</button>
+                    <button class="btnSubmit" v-else style="display: none"
+                            @click="showEvaluationPopup(order)">已完成</button>
+                </span>
+            </div>
+            <!--            <div class="btn" v-if="order.status === 4">-->
+            <!--                <div class="btnEvaluate" @click="showEvaluationPopup(order)">评价</div>-->
+            <!--            </div>-->
+        </div>
+    </div>
+    <!--    <div class="divBottom" @click="toAddressCreatePage">+ 添加收货地址</div>-->
+</div>
+<!-- 开发环境版本,包含了有帮助的命令行警告 -->
+<script src="../../backend/plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../backend/plugins/element-ui/index.js"></script>
+<!-- 引入vant样式 -->
+<script src="../js/vant.min.js"></script>
+<script src="../api/address.js"></script>
+<!-- 引入axios -->
+<script src="../../backend/plugins/axios/axios.min.js"></script>
+<script src="../js/request.js"></script>
+<script src="../api/order.js"></script>
+<script>
+    new Vue({
+        el: "#address",
+        data() {
+            return {
+                addressList: [],
+                paging: {
+                    page: 1,
+                    pageSize: 5
+                },
+                orderList: [],
+                loading: false,
+                finished: false
+            }
+        },
+        computed: {},
+        created() {
+            this.initData()
+            this.getList()
+        },
+        mounted() {
+        },
+        methods: {
+            goBack() {
+                history.go(-1)
+            },
+            toAddressEditPage(item) {
+                window.requestAnimationFrame(() => {
+                    window.location.href = `/front/page/address-edit.html?id=${item.id}`
+                })
+            },
+            toAddressCreatePage() {
+                window.requestAnimationFrame(() => {
+                    window.location.href = '/front/page/address-edit.html'
+                })
+            },
+            async initData() {
+                const res = await addressListApi()
+                if (res.code === 1) {
+                    this.addressList = res.data
+                } else {
+                    this.$message.error(res.msg)
+                }
+            },
+            async setDefaultAddress(item) {
+                if (item.id) {
+                    const res = await setDefaultAddressApi({id: item.id})
+                    if (res.code === 1) {
+                        this.initData()
+                    } else {
+                        this.$message.error(res.msg)
+                    }
+                }
+            },
+            itemClick(item) {
+                const url = document.referrer
+                //表示是从订单页面跳转过来的
+                if (url.includes('order')) {
+                    this.setDefaultAddress(item)
+                    history.go(-1)
+                }
+            },
+            async getList() {
+                if (this.finished) {
+                    this.loading = false;
+                    return
+                }
+                const res = await orderPagingApi(this.paging)
+                if (res.code === 1 && res.data && res.data.records) {
+                    this.orderList.push(...res.data.records)
+                    let records = res.data.records
+                    records.forEach(item => {
+                        if (item.orderDetails) {
+                            let number = 0
+                            item.orderDetails.forEach(ele => {
+                                number += ele.number
+                            })
+                            item.sumNum = number
+                        }
+                    })
+                } else {
+                    this.$notify({type: 'warning', message: res.msg});
+                }
+                this.loading = false;
+                if (res.data && this.paging.page >= res.data.pages) {
+                    this.finished = true;
+                }
+                this.paging.page = this.paging.page + 1
+            },
+            async addOrderAgain(order) {
+                const res = await orderAgainApi({id: order.id})
+                if (res.code === 1) {
+                    window.requestAnimationFrame(() => {
+                        window.location.href = '/front/index.html'
+                    })
+                } else {
+                    this.$notify({type: 'warning', message: res.msg});
+                }
+            },
+            showEvaluationPopup(order) {
+                const orderId = order.id;
+                const params = new URLSearchParams();
+                params.append('orderId', orderId);
+                window.location.href = `/front/page/evaluation.html?${params}`;
+            },
+            getStatus(status) {
+                let str = ''
+                switch (status) {
+                    case 1:
+                        str = '去付款'
+                        break;
+                    case 2:
+                        str = '待派送'
+                        break;
+                    case 3:
+                        str = '已派送'
+                        break;
+                    case 4:
+                        str = '已完成'
+                        break;
+                    case 5:
+                        str = '已取消'
+                        break;
+                }
+                return str
+            },
+            async updateOrderStatus(order) {
+                console.error("order")
+                console.log(order)
+                const res = await updateOrderStatusApi({id: order.id})
+                if (res.code === 1) {
+                    this.$message.success('订单已完成')
+                    this.initData()
+                    this.getList()
+                } else {
+                    this.$notify({type: 'warning', message: res.msg});
+                }
+
+            }
+        }
+    })
+</script>
+</body>
+</html>

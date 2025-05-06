@@ -27,4 +27,6 @@ public class Complaint implements Serializable {
     private String handlingResult;
 
     private LocalDateTime handlingTime;
+
+    private Long merchantId;
 }

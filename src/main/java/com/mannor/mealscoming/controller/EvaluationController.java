@@ -5,12 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.BaseContext;
 import com.mannor.mealscoming.common.R;
-import com.mannor.mealscoming.entity.Employee;
-import com.mannor.mealscoming.entity.Evaluation;
-import com.mannor.mealscoming.entity.Orders;
-import com.mannor.mealscoming.service.EmployeeService;
-import com.mannor.mealscoming.service.EvaluationService;
-import com.mannor.mealscoming.service.OrdersService;
+import com.mannor.mealscoming.dto.EvaluationUserDto;
+import com.mannor.mealscoming.entity.*;
+import com.mannor.mealscoming.service.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +30,14 @@ public class EvaluationController {
 
     @Autowired
     private EmployeeService employeeService;
+
+
+    @Autowired
+    private UserService userService;
+
+
+    @Autowired
+    private MerchantService merchantService;
 
     /**
      * 新增评价管理信息
@@ -87,19 +93,47 @@ public class EvaluationController {
      * @return 评价管理信息列表
      */
     @GetMapping
-    public R<Page<Evaluation>> list(@RequestParam Integer pageNum,
-                                    @RequestParam Integer pageSize,
-                                    @RequestParam(required = false) String evaluationContent,
-                                    @RequestParam(required = false) String evaluatedObjectType, HttpServletRequest request) {
+    public R<Page<EvaluationUserDto>> list(@RequestParam Integer pageNum,
+                                           @RequestParam Integer pageSize,
+                                           @RequestParam(required = false) String evaluationContent,
+                                           @RequestParam(required = false) String evaluatedObjectType,
+                                           HttpServletRequest request) {
         QueryWrapper<Evaluation> queryWrapper = new QueryWrapper<>();
-        if (evaluationContent != null && evaluationContent != "") {
+        if (evaluationContent != null && !evaluationContent.isEmpty()) {
             queryWrapper.like("evaluation_content", evaluationContent);
         }
-        if (evaluatedObjectType != null && evaluatedObjectType != "") {
+        if (evaluatedObjectType != null && !evaluatedObjectType.isEmpty()) {
             queryWrapper.eq("evaluated_object_type", evaluatedObjectType);
         }
         queryWrapper.orderByDesc("id");
-        return R.success(evaluationService.page(new Page<>(pageNum, pageSize), queryWrapper));
+
+        Page<Evaluation> evaluationPage = evaluationService.page(new Page<>(pageNum, pageSize), queryWrapper);
+
+        Page<EvaluationUserDto> evaluationUserDtoPage = new Page<>();
+        BeanUtils.copyProperties(evaluationPage, evaluationUserDtoPage, "records");
+
+        List<EvaluationUserDto> evaluationUserDtoList = new ArrayList<>();
+        for (Evaluation evaluation : evaluationPage.getRecords()) {
+            EvaluationUserDto evaluationUserDto = new EvaluationUserDto();
+            BeanUtils.copyProperties(evaluation, evaluationUserDto);
+
+            Long userId = evaluation.getUserId();
+            if (userId != null) {
+                User user = userService.getById(userId);
+                evaluationUserDto.setUser(user);
+            }
+
+            Long merchantId = evaluation.getMerchantId();
+            if (merchantId != null) {
+                Merchant merchant = merchantService.getById(merchantId);
+                evaluationUserDto.setMerchant(merchant);
+            }
+
+            evaluationUserDtoList.add(evaluationUserDto);
+        }
+        evaluationUserDtoPage.setRecords(evaluationUserDtoList);
+
+        return R.success(evaluationUserDtoPage);
     }
 
     /**

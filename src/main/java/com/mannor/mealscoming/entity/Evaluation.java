@@ -38,4 +38,6 @@ public class Evaluation implements Serializable {
 
     // 评分，用户对被评价对象的评分
     private Short score;
+
+    private Long MerchantId;
 }

@@ -74,7 +74,7 @@
     <div class="container">
         <!-- 搜索项 -->
         <div class="tableBar">
-            <el-input v-model="input" placeholder="请输入用户ID" style="width: 250px">
+            <el-input v-model="input" placeholder="请输入用户名称" style="width: 250px">
                 <i slot="prefix" class="el-input__icon el-icon-search" style="cursor: pointer" @click="init"></i>
             </el-input>
             <el-select v-model="complaintType" placeholder="请选择投诉建议类型">
@@ -92,7 +92,12 @@
             <!--            <el-table-column prop="id" label="主键" min-width="80"></el-table-column>-->
             <el-table-column prop="complaintType" label="投诉建议类型" min-width="120"></el-table-column>
             <el-table-column prop="complaintContent" label="投诉建议内容" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="userId" label="用户ID" min-width="80"></el-table-column>
+<!--            <el-table-column prop="user" label="用户名" min-width="80"></el-table-column>-->
+            <el-table-column prop="user" label="用户名" min-width="80">
+                <template slot-scope="{ row }">
+                    <span>{{ row.user.name?row.user.name:'--' }}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="handlingStatus" label="处理状态" min-width="100">
                 <template slot-scope="{ row }">
                     <span>{{ row.handlingStatus }}</span>
@@ -107,7 +112,7 @@
                     </el-button>
                     <!-- 添加处理按钮 -->
                     <el-button type="text" @click="handleComplaint(row)" class="blueBug">
-                        处理
+                        回复
                     </el-button>
                 </template>
             </el-table-column>
@@ -229,6 +234,9 @@
                         // console.log(response.data);
                         // console.log(this.page, this.pageSize, this.input, this.complaintType, this.handlingStatus)
                         let res = response.data
+                        // res.data.records.forEach(item => {
+                        //     console.log(item)
+                        // });
                         // console.log("点击查询")
                         if (res.code === 1) {
                             this.tableData = res.data.records;

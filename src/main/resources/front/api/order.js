@@ -46,3 +46,13 @@ function alipayQueryApi() {
         'method': 'get',
     })
 }
+
+//更新订单状态
+function updateOrderStatusApi(data){
+    return $axios({
+        'url': '/order/updateStatus',
+        'method': 'post',
+        data:data
+    })
+
+}

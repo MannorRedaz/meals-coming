@@ -39,11 +39,19 @@
             </div>
 
             <el-scrollbar wrap-class="scrollbar-wrapper">
-                <el-menu
+<!--                <el-menu-->
+<!--                        :default-active="defAct"-->
+<!--                        :unique-opened="false"-->
+<!--                        :collapse-transition="false"-->
+<!--                        background-color="#343744"-->
+<!--                        text-color="#bfcbd9"-->
+<!--                        active-text-color="#f4f4f5"-->
+<!--                >-->
+                    <el-menu
                         :default-active="defAct"
                         :unique-opened="false"
                         :collapse-transition="false"
-                        background-color="#343744"
+                        background-color="#816300"
                         text-color="#bfcbd9"
                         active-text-color="#f4f4f5"
                 >
@@ -82,8 +90,10 @@
                     <span>{{headTitle}}</span>
                 </div>
                 <div class="right-menu" title="修改信息列表" alt="修改信息列表">
+                    <img src="images/icons/renshu@2x.png" class="info outLogin" @click="goToInfoPage"
+                         alt="修改信息列表"/>
                     <div class="avatar-wrapper" @click="goToInfoPage" alt="修改信息列表">
-                        {{ userInfo.username }}
+                        {{ userInfo.merchantName }}
                     </div>
                     <!-- <div class="logout" @click="logout">退出</div> -->
                     <img src="images/icons/btn_close@2x.png" class="outLogin" alt="退出" @click="logout"/>
@@ -131,12 +141,14 @@
                         name: '流水统计',
                         url: 'page/statistic/manage.html',
                         icon: 'icon-order'
-                    }, {
-                        id: '2',
-                        name: '员工管理',
-                        url: 'page/member/list.html',
-                        icon: 'icon-member'
-                    }, {
+                    },
+                    // {
+                    //     id: '2',
+                    //     name: '员工管理',
+                    //     url: 'page/member/list.html',
+                    //     icon: 'icon-member'
+                    // },
+                    {
                         id: '3',
                         name: '分类管理',
                         url: 'page/category/list.html',
@@ -183,6 +195,7 @@
                 this.userInfo = JSON.parse(userInfo)
                 console.log('userInfo', this.userInfo)
             }
+            console.log('this.userInfo', this.userInfo)
             this.closeLoading()
         },
         beforeDestroy() {
@@ -224,7 +237,7 @@
             },
             // 新增跳转方法
             goToInfoPage() {
-                this.iframeUrl='page/info/info.html?id=1904531382730752000'
+                this.iframeUrl = `page/info/info.html?id=`+this.userInfo.id
             }
         }
     })

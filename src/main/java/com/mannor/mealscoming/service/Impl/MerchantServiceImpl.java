@@ -101,7 +101,8 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         merchant.setId(merchantDto.getId());
         merchant.setMerchantName(merchantDto.getMerchantName());
         merchant.setUsername(merchantDto.getUsername());
-        merchant.setPassword(DigestUtils.md5DigestAsHex(merchantDto.getPassword().getBytes()));
+//        merchant.setPassword(DigestUtils.md5DigestAsHex(merchantDto.getPassword().getBytes()));
+        merchant.setPassword(null);
         merchant.setUpdateTime(LocalDateTime.now());
         merchant.setUsername(merchantDto.getUsername());
 

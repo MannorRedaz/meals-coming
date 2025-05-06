@@ -6,17 +6,26 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.BaseContext;
 import com.mannor.mealscoming.common.R;
+import com.mannor.mealscoming.dto.ComplaintUserDto;
 import com.mannor.mealscoming.entity.Complaint;
 import com.mannor.mealscoming.entity.Employee;
+import com.mannor.mealscoming.entity.Merchant;
+import com.mannor.mealscoming.entity.User;
 import com.mannor.mealscoming.service.ComplaintService;
 import com.mannor.mealscoming.service.EmployeeService;
+import com.mannor.mealscoming.service.MerchantService;
+import com.mannor.mealscoming.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/complaint")
@@ -28,6 +37,12 @@ public class ComplaintController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private MerchantService merchantService;
 
     /**
      * 新增投诉建议管理信息
@@ -83,17 +98,17 @@ public class ComplaintController {
      * @return 投诉建议管理信息列表
      */
     @GetMapping
-    public R<Page<Complaint>> findAll(@RequestParam Integer pageNum,
-                                      @RequestParam Integer pageSize,
-                                      @RequestParam(required = false) String userId,
-                                      @RequestParam(required = false) String complaintType,
-                                      @RequestParam(required = false) String handlingStatus) {
+    public R<Page<ComplaintUserDto>> findAll(@RequestParam Integer pageNum,
+                                             @RequestParam Integer pageSize,
+                                             @RequestParam(required = false) String userId,
+                                             @RequestParam(required = false) String complaintType,
+                                             @RequestParam(required = false) String handlingStatus) {
         if (pageNum <= 0 || pageSize <= 0) {
             throw new IllegalArgumentException("页码和每页数量必须为正整数");
         }
         QueryWrapper<Complaint> queryWrapper = new QueryWrapper<>();
         if (userId != null && !userId.isEmpty()) {
-            queryWrapper.eq("user_id", userId);
+            queryWrapper.like("user_id", userId);
         }
         if (complaintType != null && !complaintType.isEmpty()) {
             queryWrapper.eq("complaint_type", complaintType);
@@ -102,7 +117,30 @@ public class ComplaintController {
             queryWrapper.eq("handling_status", handlingStatus);
         }
         queryWrapper.orderByDesc("id");
-        return R.success(complaintService.page(new Page<>(pageNum, pageSize), queryWrapper));
+        Page<Complaint> complaintPage = complaintService.page(new Page<>(pageNum, pageSize), queryWrapper);
+
+        Page<ComplaintUserDto> complaintUserDtoPage = new Page<>();
+        BeanUtils.copyProperties(complaintPage, complaintUserDtoPage, "records");
+
+        List<ComplaintUserDto> complaintUserDtoList = new ArrayList<>();
+        for (Complaint complaint : complaintPage.getRecords()) {
+            ComplaintUserDto complaintUserDto = new ComplaintUserDto();
+            BeanUtils.copyProperties(complaint, complaintUserDto);
+            Long userIdLong = complaint.getUserId();
+            if (userIdLong != null) {
+                User user = userService.getById(userIdLong);
+                complaintUserDto.setUser(user);
+            }
+            Long merchantId = complaint.getMerchantId();
+            if (merchantId != null) {
+                Merchant merchant = merchantService.getById(merchantId);
+                complaintUserDto.setMerchant(merchant);
+            }
+            complaintUserDtoList.add(complaintUserDto);
+        }
+        complaintUserDtoPage.setRecords(complaintUserDtoList);
+
+        return R.success(complaintUserDtoPage);
     }
 
     /**
