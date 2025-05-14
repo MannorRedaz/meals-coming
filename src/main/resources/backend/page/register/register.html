@@ -104,7 +104,7 @@
         data() {
             return {
                 certificationForm: {
-                    merchantName: '饭来了',
+                    merchantName: '饭来了(默认名)',
                     accountName: '',
                     name: '',
                     phone: '',
@@ -187,6 +187,7 @@
                             merchantName: this.certificationForm.merchantName,
                             createTime: null,
                             updateTime: null,
+                            username:this.certificationForm.accountName,
 
                             merchantAudit: {
                                 // 这里可以根据实际情况给这些字段赋值，如果不需要赋值可以留空

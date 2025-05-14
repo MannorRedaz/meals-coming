@@ -5,11 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mannor.mealscoming.common.R;
 import com.mannor.mealscoming.dto.CombinedMerchantAudit;
+import com.mannor.mealscoming.entity.Merchant;
 import com.mannor.mealscoming.entity.MerchantAudit;
 import com.mannor.mealscoming.service.MerchantAuditService;
+import com.mannor.mealscoming.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -18,6 +21,9 @@ public class MerchantAuditController {
 
     @Autowired
     private MerchantAuditService merchantAuditService;
+
+    @Autowired
+    private MerchantService merchantService;
 
     /**
      * 新增商家审核信息
@@ -57,6 +63,15 @@ public class MerchantAuditController {
         }
         merchantAudit.setAuditStatus(combinedMerchantAudit.getAuditStatus());
         merchantAudit.setAuditComment(combinedMerchantAudit.getAuditComment());
+        merchantAudit.setAuditTime(combinedMerchantAudit.getAuditTime());
+        if (merchantAuditService.getOne(getByMerchantId) != null) {
+            Merchant merchant = new Merchant();
+            merchant.setId(merchantAudit.getMerchantId());
+            merchant.setUpdateTime(LocalDateTime.now());
+            merchantService.updateById(merchant);
+
+        }
+
         return merchantAuditService.updateById(merchantAudit) ? R.success("修改成功") : R.error("修改失败");
     }
 

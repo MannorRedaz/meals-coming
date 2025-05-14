@@ -65,7 +65,7 @@
                         详情
                     </el-button>
                     <el-button type="text" size="small" class="delBut non">
-                            <span v-if="scope.row.merchantAudit && ( scope.row.merchantAudit.auditStatus === '待审核')"
+                            <span v-if="scope.row.merchantAudit && ( scope.row.merchantAudit.auditStatus === '未审核')"
                                   @click="statusHandle(scope.row,'已通过')">审核</span>
                         <span v-else-if="scope.row.merchantAudit && (scope.row.merchantAudit.auditStatus === '已通过')"
                               @click="statusHandle(scope.row,'已禁用')">禁用</span>
@@ -162,6 +162,7 @@
                     url: '/admin/page/merchant/add.html?id=' + id,
                     name: '商家详情'
                 }, true)
+                // this.init()
             },
             // 审核操作
             statusHandle(row, status) {
@@ -174,6 +175,7 @@
                         if (res.code === 1) {
                             this.$message.success('审核操作成功！');
                             this.handleQuery();
+                            this.init()
                         }
                     }).catch(err => {
                         this.$message.error('请求出错了：' + err);
@@ -185,6 +187,7 @@
                         message: '取消审核操作'
                     });
                 });
+                this.init()
             },
             handleSizeChange(val) {
                 this.pageSize = val;
